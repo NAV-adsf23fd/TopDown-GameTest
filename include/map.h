@@ -19,7 +19,7 @@ public:
 
 class ChunkManager { // Map
 private:
-  Chunk *chunks[256] = {0};
+  Chunk *chunks[256] = {nullptr};
 
   ChunkManager();
   ~ChunkManager();
@@ -31,4 +31,15 @@ public:
   static ChunkManager &GetInstance();
 
   Chunk *GetChunkAt(uint8_t x, uint8_t y);
+  void SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block);
+
+  void LoadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+  void UnloadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+
+  void DrawLoadedChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+  // Why not put the drawing code inside LoadChunks()?
+  // > Because I don't want to run unnecessary chunk-loading
+  // code  just to handle the drawing. So, I separated them
+  // so that Draw() can run continuously, while LoadChunks()
+  // runs only occasionally.
 };

@@ -21,11 +21,16 @@ void Game::Update() {
 
 void Game::Draw() {
   player.Draw();
-  chunk1.Draw();
+  ChunkManager::GetInstance().DrawLoadedChunks(0, 0, 1, 1);
 }
 
 void Game::DrawDebug() const { player.DrawDebug(); }
 
-Game::Game() : player({1, 1, 0}), chunk1(1, 1) {
-  chunk1.SetBlockAt(0, 0, 0, BlockType::Error);
+Game::Game() : player({1, 1, 0}) {
+  ChunkManager::GetInstance().LoadChunks(0, 0, 1, 1);
+  ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
+  // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Dirt);
+  // ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
 }
