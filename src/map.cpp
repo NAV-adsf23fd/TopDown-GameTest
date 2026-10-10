@@ -37,8 +37,8 @@ ChunkManager &ChunkManager::GetInstance() {
   return instance;
 }
 
-Chunk *ChunkManager::GetChunkAt(uint8_t x, uint8_t y) {
-  return chunks[x + 16 * y];
+Chunk *ChunkManager::GetChunkAt(uint16_t x, uint16_t y) {
+  return chunks[x / 16 + 16 * y / 16];
 }
 
 // TODO: Làm hệ thống log đầy đủ

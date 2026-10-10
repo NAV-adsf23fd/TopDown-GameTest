@@ -30,7 +30,7 @@ private:
 public:
   static ChunkManager &GetInstance();
 
-  Chunk *GetChunkAt(uint8_t x, uint8_t y);
+  Chunk *GetChunkAt(uint16_t x, uint16_t y);
   void SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block);
 
   void LoadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);

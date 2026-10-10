@@ -5,7 +5,7 @@
 
 class Player : Entity {
 private:
-  const float INITIALSPEED = 2;
+  const float INITIALSPEED = 20;
   const float JUMPSPEED = 5;
   const float STATICFRICTION = -0.5f;
   const float AIRFRICTION = -0.5f;
@@ -27,9 +27,9 @@ public:
   ~Player() override = default;
 
   void SetDirection(uint8_t direction);
+  Vector3 GetPosition();
 
   void Update() override;
   void Draw() override;
-
   void DrawDebug() const; // temp
 };

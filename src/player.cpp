@@ -87,6 +87,7 @@ void Player::Move(uint8_t direction) {
 }
 
 void Player::SetDirection(uint8_t direction) { currentDirection = direction; }
+Vector3 Player::GetPosition() { return collisionBox.GetPosition(); }
 
 bool Player::CanChangeState(EntityState newState) { return true; }
 void Player::ChangeState(EntityState newState) {}
