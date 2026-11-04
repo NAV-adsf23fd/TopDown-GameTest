@@ -33,22 +33,22 @@ inline std::string levelToString(Level level) {
 [[maybe_unused]] inline static Level min_level = Level::INFO;
 
 const std::string RESET = "\033[0m";
-const std::string RED = "\033[31m";
-const std::string GREEN = "\033[32m";
-const std::string YELLOW = "\033[33m";
-const std::string BLUE = "\033[34m";
-const std::string CYAN = "\033[36m";
+const std::string LOG_RED = "\033[31m";
+const std::string LOG_GREEN = "\033[32m";
+const std::string LOG_YELLOW = "\033[33m";
+const std::string LOG_BLUE = "\033[34m";
+const std::string LOG_CYAN = "\033[36m";
 
 inline std::string getColor(Level level) {
   switch (level) {
   case Level::DEBUG:
-    return BLUE;
+    return LOG_BLUE;
   case Level::INFO:
-    return GREEN;
+    return LOG_GREEN;
   case Level::WARNING:
-    return YELLOW;
+    return LOG_YELLOW;
   case Level::ERROR:
-    return RED;
+    return LOG_RED;
   default:
     return RESET;
   }

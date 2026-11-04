@@ -24,7 +24,7 @@ RunConfig parseArgs(int argc, char **argv) {
 }
 
 std::ostream &operator<<(std::ostream &os, const RunConfig &config) {
-  os << std::boolalpha; // in bool dưới dạng true/false
+  os << std::boolalpha; // in bool duoi dang true-false
   os << "RunConfig {\n"
      << "  to_file:      " << config.to_file << "\n"
      << "  log_file:     \"" << config.log_file << "\"\n"
@@ -35,7 +35,7 @@ std::ostream &operator<<(std::ostream &os, const RunConfig &config) {
 
 std::string RunConfig::toString() const {
   std::stringstream ss;
-  ss << std::boolalpha; // in bool dưới dạng true/false
+  ss << std::boolalpha; // in bool duoi dang true-false
   ss << "RunConfig {\n"
      << "  to_file:      " << to_file << "\n"
      << "  log_file:     \"" << log_file << "\"\n"

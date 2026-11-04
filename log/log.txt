@@ -1,0 +1,9 @@
+Topdown Test (v.0.1)------------------------------------------------
+[INFO] - [2026-11-04 23:10:08] Logger initialized
+[DEBUG] - [2026-11-04 23:10:08] RunConfig {
+  to_file:      true
+  log_file:     "log/log.txt"
+  verbose_flag: true
+}
+[INFO] - [2026-11-04 23:10:14] Closed window
+[INFO] - [2026-11-04 23:10:14] Logger closing . . .

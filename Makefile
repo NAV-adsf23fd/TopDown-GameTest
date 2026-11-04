@@ -20,6 +20,11 @@ OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 # Thêm -MMD -MP để tự động tạo file dependency (.d) cho header
 CXXFLAGS = -I$(INC_DIR) -I$(RAYLIB_PATH) -Wall -std=c++17 -MMD -MP
 
+# Thêm flag ngoài 
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $(FLAGS) -c $< -o $@
+
 # Cờ liên kết thư viện
 LDFLAGS = -L$(RAYLIB_PATH) -Wl,-rpath,$(RAYLIB_PATH) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
@@ -38,7 +43,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 -include $(OBJS:.o=.d)
 
 run: all
-	./$(TARGET)
+	./$(TARGET) $(ARGS)
 
 clean:
 	rm -rf $(BUILD_DIR)/*
