@@ -1,5 +1,5 @@
 #pragma once
-#include "block.h"
+#include "src/blocks/block.h"
 #include <cstdint>
 #include <raylib.h>
 

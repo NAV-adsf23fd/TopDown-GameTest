@@ -1,6 +1,6 @@
 #include "block.h"
 #include "blocks_list.h"
-#include "resource.h"
+#include "src/resources/resource.h"
 #include <cstdint>
 #include <memory>
 

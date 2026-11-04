@@ -1,6 +1,6 @@
 #pragma once
-#include "aabb.h"
-#include "animation.h"
+#include "src/physics/aabb.h"
+#include "src/resources/animation.h"
 #include <cstdint>
 #include <raylib.h>
 #include <vector>

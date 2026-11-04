@@ -1,6 +1,6 @@
 #include "entity.h"
-#include "animation.h"
 #include "raylib.h"
+#include "src/resources/animation.h"
 #include <cstdint>
 
 Entity::Entity(Vector3 position, Vector3 size) : collisionBox(position, size) {

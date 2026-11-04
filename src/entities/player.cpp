@@ -1,8 +1,8 @@
 #include "player.h"
-#include "animation.h"
 #include "entity.h"
 #include "raylib.h"
-#include "utility.h"
+#include "src/resources/animation.h"
+#include "src/utils/utility.h"
 #include <cstdint>
 #include <raymath.h>
 

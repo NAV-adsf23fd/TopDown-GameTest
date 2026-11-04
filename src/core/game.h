@@ -1,5 +1,5 @@
 #pragma once
-#include "player.h"
+#include "src/entities/player.h"
 
 class Game {
 private:

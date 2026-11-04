@@ -1,8 +1,8 @@
 #include "game.h"
-#include "block.h"
-#include "map.h"
 #include "raylib.h"
-#include "utility.h"
+#include "src/blocks/block.h"
+#include "src/utils/utility.h"
+#include "src/world/map.h"
 #include <cstdint>
 
 bool operator!=(const Vector3 &lhs, const Vector3 &rhs) {

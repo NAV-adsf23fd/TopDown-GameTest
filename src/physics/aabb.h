@@ -1,5 +1,5 @@
 #pragma once
-#include "utility.h"
+#include "src/utils/utility.h"
 #include <raylib.h>
 
 struct AABB {

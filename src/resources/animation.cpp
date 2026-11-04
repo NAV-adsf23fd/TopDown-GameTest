@@ -1,6 +1,6 @@
 #include "animation.h"
 #include "raylib.h"
-#include "utility.h"
+#include "src/utils/utility.h"
 #include <cstdint>
 
 // AnimRsManager

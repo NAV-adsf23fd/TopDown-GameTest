@@ -1,7 +1,7 @@
 #include "blocks_list.h"
 #include "block.h"
 #include "raylib.h"
-#include "utility.h"
+#include "src/utils/utility.h"
 #include <cstdint>
 
 // Solid block

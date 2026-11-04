@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-#include "config.h"
+#include "src/core/config.h"
 
 void Logger::init(bool to_file, const std::string &path, bool verbose_flag) {
   write_to_file = to_file;

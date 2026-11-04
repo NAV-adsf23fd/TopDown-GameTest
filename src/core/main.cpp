@@ -1,7 +1,7 @@
 #include "config.h"
 #include "game.h"
-#include "logger.h"
-#include "utility.h"
+#include "src/utils/logger.h"
+#include "src/utils/utility.h"
 #include <raylib.h>
 
 int main(int argc, char *argv[]) {

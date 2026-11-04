@@ -1,7 +1,6 @@
 -xc++
 -std=c++17
--Iinclude
+-I.
 -I/home/van/Applications/Linux/raylib/src
--L/home/van/Applications/Linux/raylib/src
--lraylib
+-Wno-c++11-narrowing
 
