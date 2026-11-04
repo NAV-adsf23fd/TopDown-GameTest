@@ -1,8 +1,17 @@
+#include "config.h"
 #include "game.h"
+#include "logger.h"
 #include "utility.h"
 #include <raylib.h>
 
-int main() {
+int main(int argc, char *argv[]) {
+  RunConfig config = parseArgs(argc, argv);
+
+  Logger::init(config.to_file, config.log_file, config.verbose_flag);
+
+  Logger::log("Logger initialized");
+  Logger::log(config.toString(), Logger::Level::DEBUG);
+
   InitWindow(800, 600, "topdown");
   SetTargetFPS(60);
   Game game;
@@ -19,5 +28,10 @@ int main() {
     EndDrawing();
   }
   CloseWindow();
+
+  Logger::log("Closed window");
+  Logger::log("Logger closing . . .");
+  Logger::close();
+
   return 0;
 }

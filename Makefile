@@ -18,7 +18,7 @@ SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
 # Thêm -MMD -MP để tự động tạo file dependency (.d) cho header
-CXXFLAGS = -I$(INC_DIR) -I$(RAYLIB_PATH) -Wall -std=c++14 -MMD -MP
+CXXFLAGS = -I$(INC_DIR) -I$(RAYLIB_PATH) -Wall -std=c++17 -MMD -MP
 
 # Cờ liên kết thư viện
 LDFLAGS = -L$(RAYLIB_PATH) -Wl,-rpath,$(RAYLIB_PATH) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11

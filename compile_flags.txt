@@ -1,4 +1,5 @@
 -xc++
+-std=c++17
 -Iinclude
 -I/home/van/Applications/Linux/raylib/src
 -L/home/van/Applications/Linux/raylib/src
