@@ -3,7 +3,6 @@
 #include "raylib.h"
 #include "src/resources/animation.h"
 #include "src/utils/utility.h"
-#include <cstdint>
 #include <raymath.h>
 
 Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
@@ -49,25 +48,22 @@ void Player::DrawDebug() const {
 
   std::string s3 = "isOnGround: " + std::to_string(collisionBox.IsOnGround());
   DrawText(s3.c_str(), 600, 530, 20, BLACK);
-
-  DrawVector(ScreenCoordinateOf(collisionBox.GetPosition()), currentAngle, 10,
-             RED);
 }
 
-void Player::Move(uint8_t direction) {
+void Player::Move(Direction direction) {
   velocity = {0, 0, velocity.z};
-  if (direction & Direction::U)
+  if ((direction & Direction::U) != Direction::NONE)
     velocity.y -= 1;
-  if (direction & Direction::D)
+  if ((direction & Direction::D) != Direction::NONE)
     velocity.y += 1;
-  if (direction & Direction::L)
+  if ((direction & Direction::L) != Direction::NONE)
     velocity.x -= 1;
-  if (direction & Direction::R)
+  if ((direction & Direction::R) != Direction::NONE)
     velocity.x += 1;
 
   Normalize2D(velocity);
 
-  if (direction != 0)
+  if (direction != Direction::NONE)
     targetAngle = GetAngleFromDirection(direction);
   currentAngle = ShortestRotatePath(currentAngle, targetAngle, ANGULAR_SPEED);
 
@@ -86,8 +82,9 @@ void Player::Move(uint8_t direction) {
                                velocity.z * dt});
 }
 
-void Player::SetDirection(uint8_t direction) { currentDirection = direction; }
+void Player::SetDirection(Direction direction) { currentDirection = direction; }
 Vector3 Player::GetPosition() { return collisionBox.GetPosition(); }
+float Player::GetAngle() { return currentAngle; }
 
 bool Player::CanChangeState(EntityState newState) { return true; }
 void Player::ChangeState(EntityState newState) {}

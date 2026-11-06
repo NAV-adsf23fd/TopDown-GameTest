@@ -22,6 +22,7 @@ Texture2D &AnimRsManager::GetTexture(const std::string &filePath) {
   }
 
   textures[filePath] = LoadTexture(filePath.c_str());
+  SetTextureFilter(textures[filePath], TEXTURE_FILTER_POINT);
   return textures[filePath];
 }
 
@@ -35,7 +36,7 @@ void AnimRsManager::UnloadAllTextures() {
 // Animation
 
 Animation::Animation(const std::string &filePath, float width, float height,
-                     float baseTime, uint8_t direction) {
+                     float baseTime, Direction direction) {
   spriteSheet = AnimRsManager::GetInstance().GetTexture(filePath);
 
   firstFrame = 0;
@@ -83,7 +84,7 @@ void Animation::Draw(Vector2 position) {
   DrawTextureRec(spriteSheet, frameRect, position, WHITE);
 }
 
-void Animation::SetDirection(uint8_t direction) {
+void Animation::SetDirection(Direction direction) {
   currentDirection = direction;
 }
 

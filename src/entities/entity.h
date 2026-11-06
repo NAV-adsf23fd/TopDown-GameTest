@@ -1,6 +1,7 @@
 #pragma once
 #include "src/physics/aabb.h"
 #include "src/resources/animation.h"
+#include "src/utils/utility.h"
 #include <cstdint>
 #include <raylib.h>
 #include <vector>
@@ -19,12 +20,12 @@ protected:
   Vector3 acceleration;
 
   EntityState currentState;
-  uint8_t currentDirection;
+  Direction currentDirection;
 
   int hp, maxHp;
 
   std::vector<Animation> animations;
-  virtual void UpdateAnimation(uint8_t direction);
+  virtual void UpdateAnimation(Direction direction);
 
 private:
   virtual bool CanChangeState(EntityState newState) = 0;

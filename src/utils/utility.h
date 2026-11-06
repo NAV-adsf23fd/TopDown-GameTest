@@ -30,7 +30,7 @@ struct Box3 {
 //       static_cast<std::underlying_type_t<Direction>>(flag2));
 // }
 
-enum Direction : uint8_t {
+enum class Direction : uint8_t {
   NONE = 0,
   U = 1 << 0, // Up
   D = 1 << 1, // Down
@@ -40,9 +40,18 @@ enum Direction : uint8_t {
 
 // I have to cast to uint8_t in output because of some language problem that
 // make my Direction type doesn't work properly
-inline constexpr uint8_t operator|(Direction flag1, Direction flag2) {
-  return static_cast<uint8_t>(static_cast<uint8_t>(flag1) |
-                              static_cast<uint8_t>(flag2));
+inline constexpr Direction operator|(Direction flag1, Direction flag2) {
+  return static_cast<Direction>(static_cast<uint8_t>(flag1) |
+                                static_cast<uint8_t>(flag2));
+}
+inline constexpr Direction operator&(Direction flag1, Direction flag2) {
+  return static_cast<Direction>(static_cast<uint8_t>(flag1) &
+                                static_cast<uint8_t>(flag2));
+}
+inline constexpr Direction operator|=(Direction &flag1, Direction flag2) {
+  flag1 = static_cast<Direction>(static_cast<uint8_t>(flag1) |
+                                 static_cast<uint8_t>(flag2));
+  return flag1;
 }
 
 namespace CollisionFlags {
@@ -65,13 +74,13 @@ extern const float GRAVITY;
 }
 
 namespace Convention {
-int GetAnimationRow(const uint8_t direction);
+uint8_t GetAnimationRow(const Direction direction);
 }
 
 Vector2 ScreenCoordinateOf(const Vector3 &position);
 void Normalize2D(Vector3 &vec);
-float GetAngleFromDirection(const uint8_t direction);
-uint8_t GetDirectionFromAngle(const float angle);
+float GetAngleFromDirection(const Direction direction);
+Direction GetDirectionFromAngle(const float angle);
 float ShortestRotatePath(float currentAngle, const float targetAngle,
                          const float speed);
 

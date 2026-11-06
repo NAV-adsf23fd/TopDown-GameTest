@@ -1,4 +1,5 @@
 #include "resource.h"
+#include "raylib.h"
 
 TexRsManager::TexRsManager() {}
 
@@ -17,6 +18,7 @@ Texture2D &TexRsManager::GetTexture(const std::string &filePath) {
   }
 
   textures[filePath] = LoadTexture(filePath.c_str());
+  SetTextureFilter(textures[filePath], TEXTURE_FILTER_POINT);
   return textures[filePath];
 }
 

@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "raylib.h"
 #include "src/resources/animation.h"
-#include <cstdint>
+#include "src/utils/utility.h"
 
 Entity::Entity(Vector3 position, Vector3 size) : collisionBox(position, size) {
   velocity = Vector3{0, 0, 0};
@@ -23,8 +23,8 @@ Entity::Entity(float x, float y, float z, float width, float height,
 //   }
 // }
 
-void Entity::UpdateAnimation(uint8_t direction) {
-  if (direction == static_cast<uint8_t>(Direction::NONE))
+void Entity::UpdateAnimation(Direction direction) {
+  if (direction == Direction::NONE)
     return;
   for (auto &animation : animations) {
     animation.SetDirection(direction);

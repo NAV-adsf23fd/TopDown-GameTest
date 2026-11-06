@@ -1,5 +1,6 @@
 #include "config.h"
 #include "game.h"
+#include "src/functionality/camera.h"
 #include "src/utils/logger.h"
 #include "src/utils/utility.h"
 #include <raylib.h>
@@ -18,13 +19,20 @@ int main(int argc, char *argv[]) {
 
   while (!WindowShouldClose()) {
     dt = GetFrameTime();
-    BeginDrawing();
-
-    ClearBackground(RAYWHITE);
     game.Update();
-    game.Draw();
-    game.DrawDebug();
 
+    BeginDrawing();
+    {
+      ClearBackground(RAYWHITE);
+
+      BeginMode2D(PlayerCamera::camera);
+      {
+        game.Draw();
+      }
+      EndMode2D();
+
+      game.DrawDebug();
+    }
     EndDrawing();
   }
   CloseWindow();

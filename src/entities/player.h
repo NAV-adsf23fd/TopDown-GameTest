@@ -1,6 +1,6 @@
 #pragma once
 #include "entity.h"
-#include <cstdint>
+#include "src/utils/utility.h"
 #include <raylib.h>
 
 class Player : Entity {
@@ -17,7 +17,7 @@ private:
   // direction -> angle: 0,1,2,3,4,5,6,7), speed = n means player can rotate n
   // direction 1 seconds. Use GetAngleFromDirection
 
-  void Move(uint8_t direction);
+  void Move(Direction direction);
   // void UpdateAnimation() override;
   bool CanChangeState(EntityState newState) override;
   void ChangeState(EntityState newState) override;
@@ -26,8 +26,9 @@ public:
   Player(Vector3 position);
   ~Player() override = default;
 
-  void SetDirection(uint8_t direction);
+  void SetDirection(Direction direction);
   Vector3 GetPosition();
+  float GetAngle();
 
   void Update() override;
   void Draw() override;

@@ -1,4 +1,5 @@
 #pragma once
+#include "src/utils/utility.h"
 #include <cstdint>
 #include <raylib.h>
 #include <string>
@@ -30,7 +31,7 @@ private:
   int firstFrame;
   int currentFrame;
   int lastFrame;
-  int currentDirection;
+  Direction currentDirection;
 
   float frameWidth;
   float frameHeight;
@@ -54,7 +55,7 @@ private:
 
 public:
   Animation(const std::string &filePath, float width, float height,
-            float baseTime, uint8_t direction);
+            float baseTime, Direction direction);
   ~Animation() = default;
 
   void Play(uint8_t direction);
@@ -64,6 +65,6 @@ public:
   void Update();
   void Draw(Vector2 position);
 
-  void SetDirection(uint8_t direction);
+  void SetDirection(Direction direction);
   int GetCurrentFrame() const;
 };

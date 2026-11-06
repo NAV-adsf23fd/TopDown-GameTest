@@ -21,53 +21,43 @@ namespace physics {
 const float GRAVITY = -20.0f;
 }
 
-int Convention::GetAnimationRow(const uint8_t direction) {
-  switch (direction) {
-  case Direction::U:
-    return 0;
-  case Direction::U | Direction::R:
-    return 1;
-  case Direction::R:
-    return 2;
-  case Direction::D | Direction::R:
-    return 3;
-  case Direction::D:
-    return 4;
-  case Direction::D | Direction::L:
-    return 5;
-  case Direction::L:
-    return 6;
-  case Direction::U | Direction::L:
-    return 7;
-  default:
-    return -1;
-  }
+uint8_t Convention::GetAnimationRow(const Direction direction) {
+  static constexpr uint8_t row_lookup[16] = {
+      0, // 0  (NONE) fallback
+      0, // 1  (U)
+      4, // 2  (D)
+      0, // 3  fallback
+      6, // 4  (L)
+      7, // 5  (U|L)
+      5, // 6  (D|L)
+      0, // 7  fallback
+      2, // 8  (R)
+      1, // 9  (U|R)
+      3, // 10 (D|R)
+  };
+  uint8_t index = static_cast<uint8_t>(direction);
+  return (index < 11) ? row_lookup[index] : 0;
 }
 
-float GetAngleFromDirection(const uint8_t direction) {
-  switch (direction) {
-  case Direction::U:
-    return 6;
-  case Direction::U | Direction::R:
-    return 7;
-  case Direction::R:
-    return 0;
-  case Direction::D | Direction::R:
-    return 1;
-  case Direction::D:
-    return 2;
-  case Direction::D | Direction::L:
-    return 3;
-  case Direction::L:
-    return 4;
-  case Direction::U | Direction::L:
-    return 5;
-  default:
-    return -1;
-  }
+float GetAngleFromDirection(const Direction direction) {
+  static constexpr uint8_t row_lookup[16] = {
+      0, // 0  (NONE) fallback
+      6, // 1  (U)
+      2, // 2  (D)
+      0, // 3  fallback
+      4, // 4  (L)
+      5, // 5  (U|L)
+      3, // 6  (D|L)
+      0, // 7  fallback
+      0, // 8  (R)
+      7, // 9  (U|R)
+      1, // 10 (D|R)
+  };
+  uint8_t index = static_cast<uint8_t>(direction);
+  return (index < 11) ? row_lookup[index] : 0;
 }
 
-uint8_t GetDirectionFromAngle(const float angle) {
+Direction GetDirectionFromAngle(const float angle) {
   if ((angle >= 7.5f && angle < 8.0f) || (angle < 0.5f && angle >= 0)) {
     return Direction::R;
   } else if (angle >= 0.5f && angle < 1.5f) {

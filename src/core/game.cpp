@@ -1,6 +1,7 @@
 #include "game.h"
 #include "raylib.h"
 #include "src/blocks/block.h"
+#include "src/functionality/camera.h"
 #include "src/utils/utility.h"
 #include "src/world/map.h"
 #include <cstdint>
@@ -10,7 +11,7 @@ bool operator!=(const Vector3 &lhs, const Vector3 &rhs) {
 }
 
 void Game::Update() {
-  uint8_t flags = Direction::NONE;
+  Direction flags = Direction::NONE;
   if (IsKeyDown(KEY_W))
     flags |= Direction::U;
   if (IsKeyDown(KEY_S))
@@ -40,11 +41,17 @@ void Game::Update() {
       ChunkManager::GetInstance().UnloadChunks(px_o - 1, py_o - 1, px_o + 1,
                                                py_o + 1);
   }
+
+  PlayerCamera::CameraUpdate(ScreenCoordinateOf(player.GetPosition()));
 }
 
 void Game::Draw() {
   player.Draw();
   ChunkManager::GetInstance().DrawLoadedChunks(0, 0, 1, 1);
+  DrawVector(ScreenCoordinateOf(player.GetPosition()), player.GetAngle(), 10,
+             RED);
+  DrawVector({-100, 0}, 0.0f, 200, BLACK);
+  DrawVector({0, -100}, 90.0f, 200, BLACK);
 }
 
 void Game::DrawDebug() const { player.DrawDebug(); }
@@ -52,8 +59,10 @@ void Game::DrawDebug() const { player.DrawDebug(); }
 Game::Game() : player({1, 1, 0}) {
   ChunkManager::GetInstance().LoadChunks(0, 0, 1, 1);
   ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
-  // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
   ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
   ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Dirt);
-  // ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
+
+  PlayerCamera::Init(ScreenCoordinateOf(player.GetPosition()));
 }
