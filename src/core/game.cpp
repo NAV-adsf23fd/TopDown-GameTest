@@ -1,10 +1,12 @@
 #include "game.h"
 #include "raylib.h"
 #include "src/blocks/block.h"
+#include "src/entities/player.h"
 #include "src/functionality/camera.h"
+#include "src/functionality/render.h"
 #include "src/utils/utility.h"
 #include "src/world/map.h"
-#include <cstdint>
+#include <memory>
 
 bool operator!=(const Vector3 &lhs, const Vector3 &rhs) {
   return (lhs.x != rhs.x || lhs.y != rhs.y);
@@ -21,48 +23,51 @@ void Game::Update() {
   if (IsKeyDown(KEY_D))
     flags |= Direction::R;
 
-  player.SetDirection(flags);
+  player->SetDirection(flags);
 
-  Vector3 oldPosition = player.GetPosition();
+  Vector3 oldPosition = player->GetPosition();
 
-  player.Update();
+  player->Update();
 
   // TODO: hiện đang dùng nhiều uint8_t để test, càn cập nhật lại vì vị trí có
   // thể âm
-  Vector3 newPosition = player.GetPosition();
-  if (oldPosition != newPosition) {
-    uint8_t px = static_cast<uint8_t>(newPosition.x) / 16;
-    uint8_t py = static_cast<uint8_t>(newPosition.y) / 16;
-    uint8_t px_o = static_cast<uint8_t>(oldPosition.x) / 16;
-    uint8_t py_o = static_cast<uint8_t>(oldPosition.y) / 16;
-    ChunkManager::GetInstance().LoadChunks(px - 1, py - 1, px + 1, py + 1);
+  Vector3 newPosition = player->GetPosition();
 
-    if ((px != px_o) || (py != py_o))
-      ChunkManager::GetInstance().UnloadChunks(px_o - 1, py_o - 1, px_o + 1,
-                                               py_o + 1);
-  }
+  // if (oldPosition != newPosition) {
+  //   int8_t px = static_cast<int8_t>(newPosition.x) / 16;
+  //   int8_t py = static_cast<int8_t>(newPosition.y) / 16;
+  //   int8_t px_o = static_cast<int8_t>(oldPosition.x) / 16;
+  //   int8_t py_o = static_cast<int8_t>(oldPosition.y) / 16;
+  //   ChunkManager::GetInstance().LoadChunks(px - 1, py - 1, px + 1, py + 1);
+  //
+  //   if ((px != px_o) || (py != py_o))
+  //     ChunkManager::GetInstance().UnloadChunks(px_o - 1, py_o - 1, px_o + 1,
+  //                                              py_o + 1);
+  // }
 
-  PlayerCamera::CameraUpdate(ScreenCoordinateOf(player.GetPosition()));
+  PlayerCamera::CameraUpdate(ScreenCoordinateOf(player->GetPosition()));
 }
 
 void Game::Draw() {
-  player.Draw();
-  ChunkManager::GetInstance().DrawLoadedChunks(0, 0, 1, 1);
-  DrawVector(ScreenCoordinateOf(player.GetPosition()), player.GetAngle(), 10,
+  // player.Draw();
+  // ChunkManager::GetInstance().DrawLoadedChunks(0, 0, 1, 1);
+  RenderManager::GetInstance().Render();
+  DrawVector(ScreenCoordinateOf(player->GetPosition()), player->GetAngle(), 10,
              RED);
   DrawVector({-100, 0}, 0.0f, 200, BLACK);
   DrawVector({0, -100}, 90.0f, 200, BLACK);
 }
 
-void Game::DrawDebug() const { player.DrawDebug(); }
+void Game::DrawDebug() const { player->DrawDebug(); }
 
-Game::Game() : player({1, 1, 0}) {
+Game::Game() {
+  player = std::make_unique<Player>(Vector3{1, 1, 0});
   ChunkManager::GetInstance().LoadChunks(0, 0, 1, 1);
   ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Dirt);
-  ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
+  // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
+  // ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(1, 1, 2, BlockType::Dirt);
+  // ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
 
-  PlayerCamera::Init(ScreenCoordinateOf(player.GetPosition()));
+  PlayerCamera::Init(ScreenCoordinateOf(player->GetPosition()));
 }

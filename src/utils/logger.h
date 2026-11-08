@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 namespace Logger {
@@ -61,4 +62,22 @@ void init(bool to_file = true, const std::string &path = "log/log.txt",
           bool verbose_flag = false);
 void log(const std::string &msg, Level level = Level::INFO);
 void close();
+
+// Hàm cơ sở để dừng đệ quy
+inline void build_string(std::stringstream &) {}
+
+// Hàm variadic template để nhồi mọi loại biến vào stringstream
+template <typename T, typename... Args>
+void build_string(std::stringstream &ss, T &&first, Args &&...args) {
+  ss << std::forward<T>(first);
+  build_string(ss, std::forward<Args>(args)...);
+}
+
+// Hàm Wrapper chính cho Logger
+template <typename... Args> void qlog(Logger::Level level, Args &&...args) {
+  std::stringstream ss;
+  build_string(ss, std::forward<Args>(args)...);
+  Logger::log(ss.str(), level);
+}
+
 } // namespace Logger

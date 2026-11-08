@@ -22,7 +22,9 @@ const float GRAVITY = -20.0f;
 }
 
 uint8_t Convention::GetAnimationRow(const Direction direction) {
-  static constexpr uint8_t row_lookup[16] = {
+  // Only use lookup tables when they are called frequently. Otherwise, use
+  // if-else/switch-case statements instead
+  static constexpr uint8_t row_lookup[11] = {
       0, // 0  (NONE) fallback
       0, // 1  (U)
       4, // 2  (D)
@@ -40,7 +42,7 @@ uint8_t Convention::GetAnimationRow(const Direction direction) {
 }
 
 float GetAngleFromDirection(const Direction direction) {
-  static constexpr uint8_t row_lookup[16] = {
+  static constexpr uint8_t row_lookup[11] = {
       0, // 0  (NONE) fallback
       6, // 1  (U)
       2, // 2  (D)
@@ -58,25 +60,26 @@ float GetAngleFromDirection(const Direction direction) {
 }
 
 Direction GetDirectionFromAngle(const float angle) {
-  if ((angle >= 7.5f && angle < 8.0f) || (angle < 0.5f && angle >= 0)) {
-    return Direction::R;
-  } else if (angle >= 0.5f && angle < 1.5f) {
-    return Direction::R | Direction::D;
-  } else if (angle >= 1.5f && angle < 2.5f) {
-    return Direction::D;
-  } else if (angle >= 2.5f && angle < 3.5f) {
-    return Direction::L | Direction::D;
-  } else if (angle >= 3.5f && angle < 4.5f) {
-    return Direction::L;
-  } else if (angle >= 4.5f && angle < 5.5f) {
-    return Direction::L | Direction::U;
-  } else if (angle >= 5.5f && angle < 6.5f) {
-    return Direction::U;
-  } else if (angle >= 6.5f && angle < 7.5f) {
-    return Direction::R | Direction::U;
-  } else {
+  static constexpr Direction direction_lookup[] = {
+      Direction::R,                // 0
+      Direction::R | Direction::D, // 1
+      Direction::D,                // 2
+      Direction::L | Direction::D, // 3
+      Direction::L,                // 4
+      Direction::L | Direction::U, // 5
+      Direction::U,                // 6
+      Direction::R | Direction::U  // 7
+  };
+
+  if (angle < 0.0f || angle >= 8.0f)
     return Direction::NONE;
-  }
+
+  int index = static_cast<int>(angle + 0.5f);
+
+  if (index >= 8)
+    index = 0;
+
+  return direction_lookup[index];
 }
 
 float ShortestRotatePath(float currentAngle, const float targetAngle,

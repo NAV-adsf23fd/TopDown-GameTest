@@ -26,11 +26,11 @@ public:
   Player(Vector3 position);
   ~Player() override = default;
 
-  void SetDirection(Direction direction);
-  Vector3 GetPosition();
+  void SetDirection(Direction direction) override;
+  Vector3 GetPosition() override;
   float GetAngle();
 
   void Update() override;
-  void Draw() override;
+  void Draw(float, float, float) override;
   void DrawDebug() const; // temp
 };

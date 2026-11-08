@@ -1,14 +1,16 @@
 #pragma once
 #include "block.h"
+#include "src/utils/utility.h"
 #include <cstdint>
 #include <string>
 
 class SolidBlock : public Block {
 private:
 public:
-  SolidBlock(const uint8_t width, const uint8_t height, const uint8_t depth,
-             const bool hasTileEntity, uint8_t direction,
-             const std::string &filePath);
+  SolidBlock(const std::string &filePath, const uint8_t width = 1,
+             const uint8_t height = 1, const uint8_t depth = 1,
+             Direction direction = Direction::U,
+             const bool hasTileEntity = false);
   virtual ~SolidBlock() = default;
 
   void Draw(float x, float y, float z) override;

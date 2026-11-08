@@ -1,6 +1,7 @@
 #include "player.h"
 #include "entity.h"
 #include "raylib.h"
+#include "src/functionality/render.h"
 #include "src/resources/animation.h"
 #include "src/utils/utility.h"
 #include <raymath.h>
@@ -23,7 +24,7 @@ void Player::Update() {
   UpdateAnimation(GetDirectionFromAngle(currentAngle));
 }
 
-void Player::Draw() {
+void Player::Draw(float, float, float) {
   // Texture2D &texture = TextureManager::Get("player0");
   // Vector2 screenPosition = ScreenCoordinateOf(collisionBox.GetPosition());
   // DrawTextureV(texture, screenPosition, WHITE);
@@ -80,6 +81,10 @@ void Player::Move(Direction direction) {
   collisionBox.UpdateMovement({velocity.x * INITIALSPEED * dt,
                                velocity.y * INITIALSPEED * dt,
                                velocity.z * dt});
+
+  Vector3 pos = collisionBox.GetPosition();
+  RenderManager::GetInstance().AddItem(
+      RenderItem{pos.x, pos.y, pos.z, static_cast<Entity *>(this)});
 }
 
 void Player::SetDirection(Direction direction) { currentDirection = direction; }

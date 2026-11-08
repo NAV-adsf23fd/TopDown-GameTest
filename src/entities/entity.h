@@ -1,5 +1,6 @@
 #pragma once
 #include "src/physics/aabb.h"
+#include "src/physics/object.h"
 #include "src/resources/animation.h"
 #include "src/utils/utility.h"
 #include <cstdint>
@@ -13,7 +14,7 @@ enum class EntityState : int8_t {
   DIE = 3,
 };
 
-class Entity {
+class Entity : public Object {
 protected:
   AABB collisionBox;
   Vector3 velocity;
@@ -37,6 +38,7 @@ public:
   Entity(float x, float y, float z, float width, float height, float depth);
   virtual ~Entity() = default;
 
-  virtual void Draw() = 0;
   virtual void Update() = 0;
+  virtual void SetDirection(Direction direction) = 0;
+  virtual Vector3 GetPosition() = 0;
 };

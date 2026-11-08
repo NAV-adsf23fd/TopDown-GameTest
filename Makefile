@@ -17,8 +17,8 @@ SRCS = $(shell find $(SRC_DIR) -name "*.cpp")
 # Chuyển đổi đường dẫn file .cpp thành file .o tương ứng trong build/
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
-# 🛠️ CỜ BIÊN DỊCH: Thêm -I. để #include từ gốc dự án, ép chuẩn C++17
-CXXFLAGS = -I. -I$(RAYLIB_PATH) -Wall -std=c++17 -MMD -MP
+# 🛠️ CỜ BIÊN DỊCH: Thêm -I. để #include từ gốc dự án, ép chuẩn C++20
+CXXFLAGS = -I. -I$(RAYLIB_PATH) -Wall -std=c++20 -MMD -MP
 
 # Cờ liên kết thư viện
 LDFLAGS = -L$(RAYLIB_PATH) -Wl,-rpath,$(RAYLIB_PATH) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11

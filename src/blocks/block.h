@@ -1,5 +1,7 @@
 #pragma once
 #include "raylib.h"
+#include "src/physics/object.h"
+#include "src/utils/utility.h"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -13,21 +15,20 @@ enum class BlockType : uint8_t {
   Air,
 };
 
-class Block {
+class Block : public Object {
 protected:
   uint8_t width, height, depth; // i use int because i dont like float for size
   Texture2D spriteSheet;
   std::string name;
   bool hasTileEntity;
   bool isSolid;
-  uint8_t direction;
+  Direction direction;
 
 public:
-  Block(const uint8_t width, const uint8_t height, const uint8_t depth,
-        const bool hasTileEntity, const bool isSolid, uint8_t direction,
-        const std::string &filePath);
+  Block(const std::string &filePath, const uint8_t width, const uint8_t height,
+        const uint8_t depth, Direction direction, const bool hasTileEntity,
+        const bool isSolid);
   virtual ~Block() = default;
-  virtual void Draw(float x, float y, float z) = 0;
   virtual void OnInteract() = 0;
   virtual void OnRandomTick() = 0;
   virtual void OnNeighbourChange() = 0;

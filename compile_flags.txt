@@ -1,5 +1,5 @@
 -xc++
--std=c++17
+-std=c++20
 -I.
 -I/home/van/Applications/Linux/raylib/src
 -Wno-c++11-narrowing

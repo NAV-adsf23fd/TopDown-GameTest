@@ -2,6 +2,7 @@
 #include "src/blocks/block.h"
 #include <cstdint>
 #include <raylib.h>
+#include <vector>
 
 class Chunk {
 private:
@@ -14,6 +15,7 @@ public:
 
   void SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block);
   BlockType GetBlockAt(uint8_t x, uint8_t y, uint8_t z);
+  std::vector<BlockType> GetBlockList();
   void Draw();
 };
 

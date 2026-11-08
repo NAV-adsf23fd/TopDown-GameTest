@@ -1,9 +1,10 @@
 #pragma once
 #include "src/entities/player.h"
+#include <memory>
 
 class Game {
 private:
-  Player player;
+  std::unique_ptr<Player> player;
 
 public:
   Game();
