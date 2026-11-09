@@ -49,8 +49,6 @@ void Game::Update() {
 }
 
 void Game::Draw() {
-  // player.Draw();
-  // ChunkManager::GetInstance().DrawLoadedChunks(0, 0, 1, 1);
   RenderManager::GetInstance().Render();
   DrawVector(ScreenCoordinateOf(player->GetPosition()), player->GetAngle(), 10,
              RED);
@@ -62,12 +60,12 @@ void Game::DrawDebug() const { player->DrawDebug(); }
 
 Game::Game() {
   player = std::make_unique<Player>(Vector3{1, 1, 0});
-  ChunkManager::GetInstance().LoadChunks(0, 0, 1, 1);
+  ChunkManager::GetInstance().LoadChunks(0, 0, 0, 0);
   ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
   // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
-  // ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(1, 1, 2, BlockType::Dirt);
-  // ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
+  ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Dirt);
+  ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
 
   PlayerCamera::Init(ScreenCoordinateOf(player->GetPosition()));
 }

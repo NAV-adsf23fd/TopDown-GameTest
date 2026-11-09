@@ -3,6 +3,7 @@
 #include "src/functionality/render.h"
 #include "src/utils/logger.h"
 #include <cstdint>
+#include <string>
 #include <sys/types.h>
 #include <vector>
 
@@ -23,18 +24,9 @@ void Chunk::SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block) {
   RenderManager::GetInstance().AddItem(
       RenderItem{(float)x, (float)y, (float)z,
                  &(BlockManager::GetInstance().GetBlock(block))});
-}
-
-// TODO: optimize this
-void Chunk::Draw() {
-  for (uint8_t i_x = 0; i_x < 16; ++i_x)
-    for (uint8_t i_y = 0; i_y < 16; ++i_y)
-      for (uint8_t i_z = 0; i_z < 16; ++i_z) {
-        if (GetBlockAt(i_x, i_y, i_z) != BlockType::None)
-          BlockManager::GetInstance()
-              .GetBlock(GetBlockAt(i_x, i_y, i_z))
-              .Draw(x + i_x, y + i_y, i_z);
-      }
+  Logger::qlog(Logger::Level::INFO, "Set block at block_coord(",
+               std::to_string(x), ",", std::to_string(y), ",",
+               std::to_string(z), ")");
 }
 
 ChunkManager::ChunkManager() {}
@@ -52,13 +44,12 @@ Chunk *ChunkManager::GetChunkAt(uint16_t x, uint16_t y) {
 
 void ChunkManager::SetBlockAt(uint8_t x, uint8_t y, uint8_t z,
                               BlockType block) {
-  uint16_t index = x + 16 * y;
-  if (chunks[index] == nullptr) {
-
-    Logger::qlog(Logger::Level::ERROR, "Didn't load chunk at (", x, ",", y,
-                 ")");
+  uint16_t index = x / 16 + y / 16 * 16;
+  Chunk *chunk = chunks[index];
+  if (chunk == nullptr) { // clang-format off
+    Logger::qlog(Logger::Level::ERROR, "Didn't load chunk at block_coord(",std::to_string(x),",",std::to_string(y),")"); // clang-format on
   } else
-    chunks[index]->SetBlockAt(x, y, z, block);
+    chunk->SetBlockAt(x - chunk->x, y - chunk->y, z, block);
 }
 
 void ChunkManager::LoadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
@@ -67,6 +58,8 @@ void ChunkManager::LoadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
       uint16_t index = i + j * 16;
       if (chunks[index] == nullptr) {
         chunks[index] = new Chunk(i, j);
+        Logger::qlog(Logger::Level::INFO, "Loaded chunk at chunk_coord(",
+                     std::to_string(i), ",", std::to_string(j), ")");
       }
     }
 }
@@ -80,15 +73,5 @@ void ChunkManager::UnloadChunks(uint8_t x1, uint8_t y1, uint8_t x2,
         delete chunks[index];
         chunks[index] = nullptr;
       }
-    }
-}
-
-void ChunkManager::DrawLoadedChunks(uint8_t x1, uint8_t y1, uint8_t x2,
-                                    uint8_t y2) {
-  for (uint8_t i = x1; i <= x2; ++i)
-    for (uint8_t j = y1; j <= y2; ++j) {
-      uint16_t index = i + 16 * j;
-      if (chunks[index] != nullptr)
-        chunks[i + j * 16]->Draw();
     }
 }

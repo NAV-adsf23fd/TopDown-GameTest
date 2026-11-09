@@ -17,6 +17,9 @@ Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
   animations = {
       Animation("assets/textures/temp.png", 16, 24, 0.3, currentDirection),
   };
+
+  RenderManager::GetInstance().AddItem(RenderItem{
+      position.x, position.y, position.z, static_cast<Entity *>(this)});
 }
 
 void Player::Update() {
@@ -25,10 +28,6 @@ void Player::Update() {
 }
 
 void Player::Draw(float, float, float) {
-  // Texture2D &texture = TextureManager::Get("player0");
-  // Vector2 screenPosition = ScreenCoordinateOf(collisionBox.GetPosition());
-  // DrawTextureV(texture, screenPosition, WHITE);
-
   for (auto &animation : animations) {
     animation.Draw(ScreenCoordinateOf(collisionBox.GetPosition()));
   }
@@ -81,10 +80,6 @@ void Player::Move(Direction direction) {
   collisionBox.UpdateMovement({velocity.x * INITIALSPEED * dt,
                                velocity.y * INITIALSPEED * dt,
                                velocity.z * dt});
-
-  Vector3 pos = collisionBox.GetPosition();
-  RenderManager::GetInstance().AddItem(
-      RenderItem{pos.x, pos.y, pos.z, static_cast<Entity *>(this)});
 }
 
 void Player::SetDirection(Direction direction) { currentDirection = direction; }

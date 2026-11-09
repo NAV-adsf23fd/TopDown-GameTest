@@ -1,5 +1,6 @@
 #include "render.h"
 #include "raylib.h"
+#include "src/utils/logger.h"
 #include <algorithm>
 #include <variant>
 
@@ -11,12 +12,15 @@ RenderManager &RenderManager::GetInstance() {
   return instance;
 }
 
-void RenderManager::AddItem(RenderItem &&item) { renderList.push_back(item); }
+void RenderManager::AddItem(RenderItem &&item) {
+  renderList.push_back(item);
+  Logger::log("Pushed item", Logger::Level::INFO);
+}
 
 void RenderManager::RemoveItem(AddressPointer address) {
   auto it = std::find_if(
       renderList.begin(), renderList.end(),
-      [address](const RenderItem &item) { return item.address == address; });
+      [&address](const RenderItem &item) { return item.address == address; });
 
   if (it != renderList.end()) {
     std::swap(*it, renderList.back());

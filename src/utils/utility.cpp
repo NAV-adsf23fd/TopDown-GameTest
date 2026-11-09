@@ -6,7 +6,7 @@
 float dt = 0.0f;
 
 Vector2 ScreenCoordinateOf(const Vector3 &position) {
-  return {8 * position.x, 8 * position.y - 8 * position.z};
+  return {16 * position.x, 16 * position.y - 8 * position.z};
 }
 
 void Normalize2D(Vector3 &vec) {
