@@ -30,13 +30,7 @@ void Chunk::SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block) {
 }
 
 ChunkManager::ChunkManager() {}
-
 ChunkManager::~ChunkManager() {}
-
-ChunkManager &ChunkManager::GetInstance() {
-  static ChunkManager instance;
-  return instance;
-}
 
 Chunk *ChunkManager::GetChunkAt(uint16_t x, uint16_t y) {
   return chunks[x / 16 + 16 * y / 16];

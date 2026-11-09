@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "src/core/manager.h"
 #include "src/physics/object.h"
 #include "src/utils/utility.h"
 #include <cstdint>
@@ -35,16 +36,11 @@ public:
 };
 
 class BlockManager {
+  MAKE_SINGLETON(BlockManager);
+
 private:
   std::unordered_map<BlockType, std::unique_ptr<Block>> registry;
 
-  BlockManager();
-  ~BlockManager();
-
-  BlockManager(const BlockManager &) = delete;
-  BlockManager &operator=(const BlockManager &) = delete;
-
 public:
-  static BlockManager &GetInstance();
   Block &GetBlock(BlockType type) const;
 };

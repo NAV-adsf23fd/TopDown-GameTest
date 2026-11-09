@@ -1,5 +1,6 @@
 #pragma once
 #include "src/blocks/block.h"
+#include "src/core/manager.h"
 #include <cstdint>
 #include <raylib.h>
 #include <vector>
@@ -19,18 +20,12 @@ public:
 };
 
 class ChunkManager { // Map
+  MAKE_SINGLETON(ChunkManager);
+
 private:
   Chunk *chunks[256] = {nullptr};
 
-  ChunkManager();
-  ~ChunkManager();
-
-  ChunkManager(const ChunkManager &) = delete;
-  ChunkManager &operator=(const ChunkManager &) = delete;
-
 public:
-  static ChunkManager &GetInstance();
-
   Chunk *GetChunkAt(uint16_t x, uint16_t y);
   void SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block);
 

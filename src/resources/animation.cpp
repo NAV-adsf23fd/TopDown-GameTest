@@ -9,11 +9,6 @@ AnimRsManager::AnimRsManager() {}
 
 AnimRsManager::~AnimRsManager() { UnloadAllTextures(); }
 
-AnimRsManager &AnimRsManager::GetInstance() {
-  static AnimRsManager instance;
-  return instance;
-}
-
 Texture2D &AnimRsManager::GetTexture(const std::string &filePath) {
   auto it = textures.find(filePath);
 

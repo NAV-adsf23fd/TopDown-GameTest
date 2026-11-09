@@ -21,11 +21,6 @@ BlockManager::BlockManager() {
 }
 BlockManager::~BlockManager() {}
 
-BlockManager &BlockManager::GetInstance() {
-  static BlockManager instance;
-  return instance;
-}
-
 Block &BlockManager::GetBlock(BlockType type) const {
   auto it = registry.find(type);
   if (it != registry.end())

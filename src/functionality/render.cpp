@@ -7,11 +7,6 @@
 RenderManager::RenderManager() {}
 RenderManager::~RenderManager() {}
 
-RenderManager &RenderManager::GetInstance() {
-  static RenderManager instance;
-  return instance;
-}
-
 void RenderManager::AddItem(RenderItem &&item) {
   renderList.push_back(item);
   Logger::log("Pushed item", Logger::Level::INFO);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "src/blocks/block.h"
+#include "src/core/manager.h"
 #include "src/entities/entity.h"
 #include <variant>
 #include <vector>
@@ -13,16 +14,12 @@ struct RenderItem {
 };
 
 class RenderManager {
+  MAKE_SINGLETON(RenderManager);
+
 private:
   std::vector<RenderItem> renderList;
-  RenderManager();
-  ~RenderManager();
-
-  RenderManager(const RenderManager &) = delete;
-  RenderManager &operator=(const RenderManager &) = delete;
 
 public:
-  static RenderManager &GetInstance();
   void AddItem(RenderItem &&item);
   void RemoveItem(AddressPointer address);
   void Render();

@@ -1,25 +1,18 @@
 #pragma once
+#include "src/core/manager.h"
 #include "src/utils/utility.h"
 #include <cstdint>
 #include <raylib.h>
 #include <string>
 #include <unordered_map>
 
-class AnimRsManager { // Singleton pattern OOP
+class AnimRsManager {
+  MAKE_SINGLETON(AnimRsManager);
+
 private:
   std::unordered_map<std::string, Texture2D> textures;
 
-  AnimRsManager();
-  ~AnimRsManager();
-
-  // Avoid copy data
-  AnimRsManager(const AnimRsManager &) = delete;
-  AnimRsManager &operator=(const AnimRsManager &) = delete;
-
 public:
-  // We can't create instance normally in singleton, so we must have static
-  // function for that
-  static AnimRsManager &GetInstance();
   Texture2D &GetTexture(const std::string &filePath);
   void UnloadAllTextures();
 };

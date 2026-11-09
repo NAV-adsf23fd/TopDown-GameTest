@@ -5,11 +5,6 @@ TexRsManager::TexRsManager() {}
 
 TexRsManager::~TexRsManager() { UnloadAllTextures(); }
 
-TexRsManager &TexRsManager::GetInstance() {
-  static TexRsManager instance;
-  return instance;
-}
-
 Texture2D &TexRsManager::GetTexture(const std::string &filePath) {
   auto it = textures.find(filePath);
 
