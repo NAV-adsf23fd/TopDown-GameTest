@@ -2,8 +2,10 @@
 #include "entity.h"
 #include "raylib.h"
 #include "src/functionality/render.h"
+#include "src/physics/collision.h"
 #include "src/resources/animation.h"
 #include "src/utils/utility.h"
+#include <mutex>
 #include <raymath.h>
 
 Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
@@ -20,6 +22,8 @@ Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
 
   RenderManager::GetInstance().AddItem(RenderItem{
       position.x, position.y, position.z, static_cast<Entity *>(this)});
+  CollisionManager::GetInstance().AddObj(
+      CollObj{position.x, position.y, position.z, static_cast<Entity *>(this)});
 }
 
 void Player::Update() {
@@ -51,6 +55,7 @@ void Player::DrawDebug() const {
 }
 
 void Player::Move(Direction direction) {
+  std::unique_lock<std::mutex> lock(positionMutex);
   velocity = {0, 0, velocity.z};
   if ((direction & Direction::U) != Direction::NONE)
     velocity.y -= 1;
@@ -77,14 +82,22 @@ void Player::Move(Direction direction) {
   } else {
     velocity.z += physics::GRAVITY * dt;
   }
-  collisionBox.UpdateMovement({velocity.x * INITIALSPEED * dt,
-                               velocity.y * INITIALSPEED * dt,
-                               velocity.z * dt});
+  collisionBox.UpdateMovement(velocity, INITIALSPEED * dt);
 }
 
-void Player::SetDirection(Direction direction) { currentDirection = direction; }
-Vector3 Player::GetPosition() { return collisionBox.GetPosition(); }
+void Player::SetDirection(Direction direction) {
+  std::unique_lock<std::mutex> lock(positionMutex);
+  currentDirection = direction;
+}
+Vector3 Player::GetPosition() {
+  std::unique_lock<std::mutex> lock(positionMutex);
+  return collisionBox.GetPosition();
+}
 float Player::GetAngle() { return currentAngle; }
 
 bool Player::CanChangeState(EntityState newState) { return true; }
 void Player::ChangeState(EntityState newState) {}
+
+void Player::AddCollider(const Box3 &target) {
+  collisionBox.SetColidersList(target);
+}

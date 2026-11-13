@@ -13,9 +13,11 @@ int main(int argc, char *argv[]) {
   Logger::log("Logger initialized");
   Logger::log(config.toString(), Logger::Level::DEBUG);
 
-  InitWindow(800, 600, "topdown");
+  InitWindow(SCREENSIZE, SCREENNAME);
   SetTargetFPS(60);
   Game game;
+
+  game.StartWorker();
 
   while (!WindowShouldClose()) {
     dt = GetFrameTime();
@@ -35,6 +37,9 @@ int main(int argc, char *argv[]) {
     }
     EndDrawing();
   }
+
+  game.StopWorker();
+
   CloseWindow();
 
   Logger::log("Closed window");

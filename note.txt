@@ -1,1 +1,5 @@
 TODO: Dung string qua la ton bo nho, sau nay hay tao table map string thanh so nguyen
+TODO: Dieu tra tai sao renderList luon co 4 phan tu ma khong unload
+TODO: jump speed 0 dang bi dung INITIALSPEED
+
+Worldsize: 256 x 256 x 256. Chunksize: 16 x 16

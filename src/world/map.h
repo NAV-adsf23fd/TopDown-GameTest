@@ -1,34 +1,43 @@
 #pragma once
 #include "src/blocks/block.h"
 #include "src/core/manager.h"
-#include <cstdint>
+#include "src/utils/utility.h"
 #include <raylib.h>
-#include <vector>
+#include <shared_mutex>
 
 class Chunk {
 private:
-  BlockType position[16 * 16 * 16];
+  BlockType position[BLOCK_IN_CHUNK];
 
 public:
-  uint8_t x, y;
-  Chunk(uint8_t x, uint8_t y);
+  c_int x, y;
+  Chunk(c_int x, c_int y);
   ~Chunk() = default;
 
-  void SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block);
-  BlockType GetBlockAt(uint8_t x, uint8_t y, uint8_t z);
-  std::vector<BlockType> GetBlockList();
+  void SetBlockAt(bc_int x, bc_int y, bc_int z, BlockType block);
+  BlockType GetBlockAt(bc_int x, bc_int y, bc_int z);
 };
 
-class ChunkManager { // Map
+class ChunkManager {
   MAKE_SINGLETON(ChunkManager);
 
 private:
-  Chunk *chunks[256] = {nullptr};
+  Chunk *chunks[CHUNK_IN_WORLD] = {nullptr};
+  std::shared_mutex chunksMutex;
 
 public:
-  Chunk *GetChunkAt(uint16_t x, uint16_t y);
-  void SetBlockAt(uint8_t x, uint8_t y, uint8_t z, BlockType block);
+  Chunk *GetChunk(c_int x, c_int y);
+  Chunk *GetChunkAt(b_int x, b_int y);
 
-  void LoadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
-  void UnloadChunks(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+  void SetBlockAt(b_int x, b_int y, b_int z, BlockType block);
+  BlockType GetBlockAt(b_int x, b_int y, b_int z);
+
+  void LoadChunks(c_int x1, c_int y1, c_int x2, c_int y2);
+  void LoadChunksAt(b_int x1, b_int y1, b_int x2, b_int y2);
+
+  void UnloadChunks(c_int x1, c_int y1, c_int x2, c_int y2);
+  void UnloadChunksAt(b_int x1, b_int y1, b_int x2, b_int y2);
+
+  bool IsChunkLoaded(c_int x, c_int y);
+  bool IsChunkLoadedAt(b_int x, b_int y);
 };

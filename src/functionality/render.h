@@ -3,6 +3,12 @@
 #include "src/blocks/block.h"
 #include "src/core/manager.h"
 #include "src/entities/entity.h"
+#include "src/entities/player.h"
+#include "src/world/map.h"
+#include <atomic>
+#include <cstdint>
+#include <thread>
+#include <unordered_map>
 #include <variant>
 #include <vector>
 
@@ -18,9 +24,16 @@ class RenderManager {
 
 private:
   std::vector<RenderItem> renderList;
+  // std::vector<Chunk *> loadedChunks;
+  std::unordered_map<uint16_t, Chunk *> loadedChunks;
+  std::thread chunkWorker;
+  std::atomic<bool> isRunning{false};
 
 public:
   void AddItem(RenderItem &&item);
   void RemoveItem(AddressPointer address);
   void Render();
+  void ChunkWorkerLoop(Player &player);
+  void StartChunkWorker(Player &player);
+  void StopChunkWorker();
 };

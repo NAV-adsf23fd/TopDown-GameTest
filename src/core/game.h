@@ -12,4 +12,6 @@ public:
   void Update();
   void Draw();
   void DrawDebug() const;
+  void StartWorker();
+  void StopWorker();
 };

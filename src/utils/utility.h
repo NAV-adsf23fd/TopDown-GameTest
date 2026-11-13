@@ -2,6 +2,22 @@
 #include <cstdint>
 #include <raylib.h>
 
+// clang-format off
+typedef int8_t b_int;    // type 8bits for block coord (x, y, z) in world
+typedef int32_t bi_int;  // type 24bits for index block coord (x * y * z = 256 * 256 * 256) in world
+typedef int8_t c_int;    // type 4bits for chunk coord (x, y) in world
+typedef int8_t ci_int;   // type 8bits for index chunk coord (x * y = 16 * 16) in world
+typedef int8_t bc_int;   // type 8bits for block coord (x, y, z) in chunk
+typedef int16_t bci_int; // type 16bits for index block coord (x * y * z = 16 * 16 * 256) in chunk
+
+#define CHUNK_IN_WORLD 16 * 16
+#define BLOCK_IN_WORLD 256 * 256 * 256
+#define BLOCK_IN_CHUNK 16 * 16 * 256
+// clang-format on
+
+#define SCREENSIZE 800, 600
+#define SCREENNAME "Topdown"
+
 extern float dt; // delta time
 
 struct Box3 {

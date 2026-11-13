@@ -41,4 +41,6 @@ public:
   virtual void Update() = 0;
   virtual void SetDirection(Direction direction) = 0;
   virtual Vector3 GetPosition() = 0;
+  virtual void AddCollider(const Box3 &target) = 0;
+  void ClearCollider();
 };

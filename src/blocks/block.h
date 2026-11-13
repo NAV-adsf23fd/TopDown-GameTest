@@ -1,4 +1,5 @@
 #pragma once
+#include "lib/type/vector3.h"
 #include "raylib.h"
 #include "src/core/manager.h"
 #include "src/physics/object.h"
@@ -11,8 +12,10 @@
 enum class BlockType : uint8_t {
   None,
   Error,
-  Dirt,
+  Grass,
   Stone,
+  Water,
+  Test,
   Air,
 };
 
@@ -33,6 +36,7 @@ public:
   virtual void OnInteract() = 0;
   virtual void OnRandomTick() = 0;
   virtual void OnNeighbourChange() = 0;
+  virtual Vector3ui8 GetSize();
 };
 
 class BlockManager {

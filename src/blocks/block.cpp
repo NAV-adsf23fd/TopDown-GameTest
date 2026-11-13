@@ -13,11 +13,17 @@ Block::Block(const std::string &filePath, const uint8_t width,
   spriteSheet = TexRsManager::GetInstance().GetTexture(filePath);
 }
 
+Vector3ui8 Block::GetSize() { return Vector3ui8{width, height, depth}; }
+
 BlockManager::BlockManager() {
   registry[BlockType::Error] =
       std::make_unique<SolidBlock>("assets/textures/ErrorBlock.png");
-  registry[BlockType::Dirt] =
+  registry[BlockType::Test] =
       std::make_unique<SolidBlock>("assets/textures/Testblock.png");
+  registry[BlockType::Grass] =
+      std::make_unique<SolidBlock>("assets/textures/Grass.png");
+  registry[BlockType::Water] =
+      std::make_unique<SolidBlock>("assets/textures/Water.png");
 }
 BlockManager::~BlockManager() {}
 

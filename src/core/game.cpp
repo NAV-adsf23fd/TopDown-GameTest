@@ -4,6 +4,7 @@
 #include "src/entities/player.h"
 #include "src/functionality/camera.h"
 #include "src/functionality/render.h"
+#include "src/physics/collision.h"
 #include "src/utils/utility.h"
 #include "src/world/map.h"
 #include <memory>
@@ -24,28 +25,11 @@ void Game::Update() {
     flags |= Direction::R;
 
   player->SetDirection(flags);
-
-  Vector3 oldPosition = player->GetPosition();
-
   player->Update();
 
-  // TODO: hiện đang dùng nhiều uint8_t để test, càn cập nhật lại vì vị trí có
-  // thể âm
-  Vector3 newPosition = player->GetPosition();
-
-  // if (oldPosition != newPosition) {
-  //   int8_t px = static_cast<int8_t>(newPosition.x) / 16;
-  //   int8_t py = static_cast<int8_t>(newPosition.y) / 16;
-  //   int8_t px_o = static_cast<int8_t>(oldPosition.x) / 16;
-  //   int8_t py_o = static_cast<int8_t>(oldPosition.y) / 16;
-  //   ChunkManager::GetInstance().LoadChunks(px - 1, py - 1, px + 1, py + 1);
-  //
-  //   if ((px != px_o) || (py != py_o))
-  //     ChunkManager::GetInstance().UnloadChunks(px_o - 1, py_o - 1, px_o + 1,
-  //                                              py_o + 1);
-  // }
-
   PlayerCamera::CameraUpdate(ScreenCoordinateOf(player->GetPosition()));
+
+  CollisionManager::GetInstance().Handle();
 }
 
 void Game::Draw() {
@@ -64,8 +48,14 @@ Game::Game() {
   ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
   // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
   ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Dirt);
+  ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Test);
   ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
 
   PlayerCamera::Init(ScreenCoordinateOf(player->GetPosition()));
 }
+
+void Game::StartWorker() {
+  RenderManager::GetInstance().StartChunkWorker(*player);
+}
+
+void Game::StopWorker() { RenderManager::GetInstance().StopChunkWorker(); }

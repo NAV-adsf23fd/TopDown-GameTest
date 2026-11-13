@@ -1,7 +1,8 @@
 #include "aabb.h"
-#include <vector>
+#include "raymath.h"
+#include "src/utils/utility.h"
 
-AABB::AABB(Vector3 position, Vector3 size)
+AABB::AABB(Vector3 &position, Vector3 &size)
     : collisionFlag(CollisionFlags::None) {
   box.minX = position.x;
   box.maxX = position.x + size.x;
@@ -55,23 +56,23 @@ void AABB::Move(float valueX, float valueY, float valueZ) {
   box.maxZ += valueZ;
 }
 
-bool AABB::IntersectsX(Box3 against) const {
+bool AABB::IntersectsX(const Box3 &against) const {
   return box.minX < against.maxX && box.maxX > against.minX;
 }
 
-bool AABB::IntersectsY(Box3 against) const {
+bool AABB::IntersectsY(const Box3 &against) const {
   return box.minY < against.maxY && box.maxY > against.minY;
 }
 
-bool AABB::IntersectsZ(Box3 against) const {
+bool AABB::IntersectsZ(const Box3 &against) const {
   return box.minZ < against.maxZ && box.maxZ > against.minZ;
 }
 
-bool AABB::Intersects(Box3 against) const {
+bool AABB::Intersects(const Box3 &against) const {
   return IntersectsX(against) && IntersectsY(against) && IntersectsZ(against);
 }
 
-float AABB::GetClipX(Box3 against, float deltaX) {
+float AABB::GetClipX(const Box3 &against, float deltaX) {
   if (IntersectsY(against) && IntersectsZ(against)) {
     if (deltaX > 0 && box.maxX <= against.minX) {
       float clip = against.minX - box.maxX;
@@ -89,7 +90,7 @@ float AABB::GetClipX(Box3 against, float deltaX) {
   return deltaX;
 }
 
-float AABB::GetClipY(Box3 against, float deltaY) {
+float AABB::GetClipY(const Box3 &against, float deltaY) {
   if (IntersectsX(against) && IntersectsZ(against)) {
     if (deltaY > 0 && box.maxY <= against.minY) {
       float clip = against.minY - box.maxY;
@@ -107,7 +108,7 @@ float AABB::GetClipY(Box3 against, float deltaY) {
   return deltaY;
 }
 
-float AABB::GetClipZ(Box3 against, float deltaZ) {
+float AABB::GetClipZ(const Box3 &against, float deltaZ) {
   if (IntersectsY(against) && IntersectsX(against)) {
     if (deltaZ > 0 && box.maxZ <= against.minZ) {
       float clip = against.minZ - box.maxZ;
@@ -130,7 +131,7 @@ bool AABB::IsOnGround() const {
          box.minZ <= 0;
 }
 
-void AABB::SetPosition(Vector3 position) {
+void AABB::SetPosition(Vector3 &position) {
   float sizeX = box.maxX - box.minX;
   float sizeY = box.maxY - box.minY;
   float sizeZ = box.maxZ - box.minZ;
@@ -145,25 +146,23 @@ void AABB::SetPosition(Vector3 position) {
 
 Vector3 AABB::GetPosition() const { return {box.minX, box.minY, box.minZ}; }
 
-void AABB::UpdateMovement(Vector3 velocity) {
+void AABB::UpdateMovement(Vector3 &velocity, const float INITIALSPEED) {
   collisionFlag = CollisionFlags::None;
 
-  Vector3 moveVector = velocity;
-  Vector3 originalVector = velocity;
+  Vector3 moveVector = Vector3Scale(velocity, INITIALSPEED);
+  Vector3 originalVector = moveVector;
 
-  std::vector<Box3> colidersList = {};
-
-  for (Box3 collider : colidersList) {
+  for (Box3 &collider : colidersList) {
     moveVector.x = GetClipX(collider, moveVector.x);
   }
   Move(moveVector.x, 0, 0);
 
-  for (Box3 collider : colidersList) {
+  for (Box3 &collider : colidersList) {
     moveVector.y = GetClipY(collider, moveVector.y);
   }
   Move(0, moveVector.y, 0);
 
-  for (Box3 collider : colidersList) {
+  for (Box3 &collider : colidersList) {
     moveVector.z = GetClipZ(collider, moveVector.z);
   }
   Move(0, 0, moveVector.z);
@@ -184,3 +183,9 @@ void AABB::UpdateMovement(Vector3 velocity) {
   if (moveVector.z != originalVector.z)
     velocity.z = 0;
 }
+
+void AABB::SetColidersList(const Box3 &target) {
+  colidersList.push_back(target);
+}
+
+void AABB::ClearColidersList() { colidersList.clear(); }

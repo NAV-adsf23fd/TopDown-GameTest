@@ -37,3 +37,5 @@ void Entity::ChangeState(EntityState newState) {
     currentState = newState;
   }
 }
+
+void Entity::ClearCollider() { collisionBox.ClearColidersList(); }
