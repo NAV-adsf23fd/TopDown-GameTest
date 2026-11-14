@@ -57,9 +57,10 @@ inline std::string getColor(Level level) {
 
 [[maybe_unused]] inline static std::ofstream log_file;
 [[maybe_unused]] inline static bool write_to_file = false;
+[[maybe_unused]] inline static bool time_stamp = false;
 
 void init(bool to_file = true, const std::string &path = "log/log.txt",
-          bool verbose_flag = false);
+          bool verbose_flag = false, bool time = false);
 void log(const std::string &msg, Level level = Level::INFO);
 void close();
 

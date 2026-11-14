@@ -48,12 +48,6 @@ Animation::Animation(const std::string &filePath, float width, float height,
 }
 
 void Animation::Play(uint8_t direction) {
-  // if (baseRow != startRow || maxFrames != frames) {
-  //   currentFrame = 0;
-  //   baseRow = startRow;
-  //   maxFrames = frames;
-  //   frameSpeed = speed;
-  //   frameTimer = 0.0f;
   if (currentFrame != firstFrame) {
     currentFrame = firstFrame;
     frameTimer = 0.0f;

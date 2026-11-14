@@ -30,7 +30,7 @@ private:
   std::atomic<bool> isRunning{false};
 
 public:
-  void AddItem(RenderItem &&item);
+  void AddItem(RenderItem &&item, const std::string &name = "obj");
   void RemoveItem(AddressPointer address);
   void Render();
   void ChunkWorkerLoop(Player &player);

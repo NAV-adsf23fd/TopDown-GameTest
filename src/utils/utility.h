@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
+#include <ostream>
 #include <raylib.h>
+#include <string>
 
 // clang-format off
 typedef int8_t b_int;    // type 8bits for block coord (x, y, z) in world
@@ -68,6 +70,13 @@ inline constexpr Direction operator|=(Direction &flag1, Direction flag2) {
   flag1 = static_cast<Direction>(static_cast<uint8_t>(flag1) |
                                  static_cast<uint8_t>(flag2));
   return flag1;
+}
+
+// print Vector3
+inline std::ostream &operator<<(std::ostream &out, const Vector3 &vec) {
+  out << "( " << std::to_string(vec.x) << "," << std::to_string(vec.y) << ","
+      << std::to_string(vec.z) << ")";
+  return out;
 }
 
 namespace CollisionFlags {

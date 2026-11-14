@@ -2,8 +2,11 @@
 #include "src/blocks/block.h"
 #include "src/core/manager.h"
 #include "src/utils/utility.h"
+#include <ostream>
 #include <raylib.h>
 #include <shared_mutex>
+#include <sstream>
+#include <string>
 
 class Chunk {
 private:
@@ -41,3 +44,12 @@ public:
   bool IsChunkLoaded(c_int x, c_int y);
   bool IsChunkLoadedAt(b_int x, b_int y);
 };
+
+inline std::ostream &operator<<(std::ostream &out, Chunk *chunk) {
+  if (chunk == nullptr)
+    out << "nullptr";
+  else
+    out << "Chunk(" << std::to_string(chunk->x) << ", "
+        << std::to_string(chunk->y) << ")";
+  return out;
+}

@@ -1,7 +1,6 @@
 #include "render.h"
 #include "raylib.h"
 #include "src/entities/player.h"
-#include "src/utils/logger.h"
 #include "src/world/map.h"
 #include <algorithm>
 #include <cstdint>
@@ -12,10 +11,9 @@
 RenderManager::RenderManager() {}
 RenderManager::~RenderManager() {}
 
-void RenderManager::AddItem(RenderItem &&item) {
+void RenderManager::AddItem(RenderItem &&item, const std::string &name) {
   if (ChunkManager::GetInstance().GetChunkAt(item.x, item.y) != nullptr) {
     renderList.push_back(item);
-    Logger::log("Pushed item", Logger::Level::INFO);
   }
 }
 
@@ -55,14 +53,12 @@ void RenderManager::Render() {
                 return pa.z < pb.z;
             });
   for (auto item : renderList) {
-    std::visit(
-        [&item](auto &&arg) { return arg->Draw(item.x, item.y, item.z); },
-        item.address);
+    std::visit([&item](auto &&arg) { arg->Draw(item.x, item.y, item.z); },
+               item.address);
   }
 }
 
 void RenderManager::StartChunkWorker(Player &player) {
-  Logger::log("Starting chunk worker . . .");
   if (isRunning)
     return; // prevent duplicated init
 
@@ -80,16 +76,13 @@ void RenderManager::StartChunkWorker(Player &player) {
 }
 
 void RenderManager::StopChunkWorker() {
-  Logger::log("Stopping ChunkWorker . . .");
   isRunning = false;
   if (chunkWorker.joinable())
     chunkWorker.join();
 }
 
 void RenderManager::ChunkWorkerLoop(Player &player) {
-  Logger::log("ChunkWorker is working");
   while (isRunning) {
-    Logger::log(std::to_string(renderList.size()));
 
     Vector3 pos =
         player.GetPosition(); // can de y vi co the thread race, them mutex
@@ -97,19 +90,16 @@ void RenderManager::ChunkWorkerLoop(Player &player) {
     uint8_t currentChunkY = static_cast<uint8_t>(pos.y) / 16;
 
     for (auto it = loadedChunks.begin(); it != loadedChunks.end();) {
-      Logger::log("inside for");
       uint8_t dx = std::abs(it->second->x - currentChunkX);
       uint8_t dy = std::abs(it->second->y - currentChunkY);
 
       if (dx > 1 || dy > 1) {
-        Logger::log("Inside if");
         uint8_t cx = it->second->x;
         uint8_t cy = it->second->y;
 
         it = loadedChunks.erase(it);
         ChunkManager::GetInstance().UnloadChunks(cx, cy, cx, cy);
       } else {
-        Logger::log("Inside else");
         ++it;
       }
     }

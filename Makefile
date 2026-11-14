@@ -1,9 +1,11 @@
-
 # Trình biên dịch
 CXX = g++
 
 # Đường dẫn Raylib trên máy của bạn
-RAYLIB_PATH = /home/van/Applications/Linux/raylib/src
+RAYLIB_PATH = $(CURDIR)/third_party/raylib/src
+
+# ⬅️ THÊM: Đường dẫn Quill (vendored trong dự án)
+QUILL_PATH  = $(CURDIR)/third_party/quill
 
 # Cấu trúc thư mục
 SRC_DIR = src
@@ -17,11 +19,18 @@ SRCS = $(shell find $(SRC_DIR) -name "*.cpp")
 # Chuyển đổi đường dẫn file .cpp thành file .o tương ứng trong build/
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
-# 🛠️ CỜ BIÊN DỊCH: Thêm -I. để #include từ gốc dự án, ép chuẩn C++20
-CXXFLAGS = -I. -I$(RAYLIB_PATH) -Wall -std=c++20 -MMD -MP
+# 🛠️ CỜ BIÊN DỊCH
+# ⬅️ THÊM: -pthread (bắt buộc cho Quill) và -isystem $(QUILL_PATH)/include
+#    -isystem thay vì -I để tắt warning từ header Quill (không cần thiết nhưng sạch log)
+CXXFLAGS = -I. -I$(RAYLIB_PATH) \
+           -isystem $(QUILL_PATH)/include \
+           -Wall -std=c++20 -MMD -MP -pthread \
+           -O2 -DNDEBUG
 
 # Cờ liên kết thư viện
-LDFLAGS = -L$(RAYLIB_PATH) -Wl,-rpath,$(RAYLIB_PATH) -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+# ⬅️ THÊM: -pthread ở cuối (link flag) — -lpthread đã có nhưng -pthread tốt hơn
+LDFLAGS = -L$(RAYLIB_PATH) -Wl,-rpath,$(RAYLIB_PATH) \
+          -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -pthread
 
 # --- CÁC LỆNH (TARGETS) ---
 all: $(TARGET)
@@ -46,4 +55,3 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 .PHONY: all run clean
-

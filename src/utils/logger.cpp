@@ -8,7 +8,8 @@
 
 #include "src/core/config.h"
 
-void Logger::init(bool to_file, const std::string &path, bool verbose_flag) {
+void Logger::init(bool to_file, const std::string &path, bool verbose_flag,
+                  bool time) {
   write_to_file = to_file;
 
   if (write_to_file) {
@@ -33,6 +34,8 @@ void Logger::init(bool to_file, const std::string &path, bool verbose_flag) {
   if (verbose_flag) {
     min_level = Level::DEBUG;
   }
+
+  time_stamp = time;
 }
 
 void Logger::log(const std::string &msg, Level level) {
@@ -52,8 +55,12 @@ void Logger::log(const std::string &msg, Level level) {
 
   // format message + timestamp
   std::stringstream ss_msg;
-  ss_msg << (formatted_lv.empty() ? "" : " - ") << "["
-         << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] ";
+  if (time_stamp)
+    ss_msg << (formatted_lv.empty() ? "" : " - ") << "["
+           << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] ";
+  else
+    ss_msg << (formatted_lv.empty() ? "" : " - ");
+
   ss_msg << msg;
 
   std::string formatted_msg = ss_msg.str();

@@ -43,8 +43,8 @@ void Game::Draw() {
 void Game::DrawDebug() const { player->DrawDebug(); }
 
 Game::Game() {
-  player = std::make_unique<Player>(Vector3{1, 1, 0});
   ChunkManager::GetInstance().LoadChunks(0, 0, 0, 0);
+  player = std::make_unique<Player>(Vector3{1, 1, 0});
   ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
   // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
   ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);

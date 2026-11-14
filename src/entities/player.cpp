@@ -4,6 +4,7 @@
 #include "src/functionality/render.h"
 #include "src/physics/collision.h"
 #include "src/resources/animation.h"
+#include "src/utils/logger.h"
 #include "src/utils/utility.h"
 #include <mutex>
 #include <raymath.h>
@@ -20,10 +21,14 @@ Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
       Animation("assets/textures/temp.png", 16, 24, 0.3, currentDirection),
   };
 
-  RenderManager::GetInstance().AddItem(RenderItem{
-      position.x, position.y, position.z, static_cast<Entity *>(this)});
+  RenderManager::GetInstance().AddItem(RenderItem{position.x, position.y,
+                                                  position.z,
+                                                  static_cast<Entity *>(this)},
+                                       "player");
   CollisionManager::GetInstance().AddObj(
       CollObj{position.x, position.y, position.z, static_cast<Entity *>(this)});
+
+  name = "player";
 }
 
 void Player::Update() {
@@ -55,7 +60,7 @@ void Player::DrawDebug() const {
 }
 
 void Player::Move(Direction direction) {
-  std::unique_lock<std::mutex> lock(positionMutex);
+  // std::unique_lock<std::mutex> lock(positionMutex);
   velocity = {0, 0, velocity.z};
   if ((direction & Direction::U) != Direction::NONE)
     velocity.y -= 1;
@@ -86,11 +91,11 @@ void Player::Move(Direction direction) {
 }
 
 void Player::SetDirection(Direction direction) {
-  std::unique_lock<std::mutex> lock(positionMutex);
+  // std::unique_lock<std::mutex> lock(positionMutex);
   currentDirection = direction;
 }
 Vector3 Player::GetPosition() {
-  std::unique_lock<std::mutex> lock(positionMutex);
+  // std::unique_lock<std::mutex> lock(positionMutex);
   return collisionBox.GetPosition();
 }
 float Player::GetAngle() { return currentAngle; }

@@ -25,21 +25,19 @@ void Chunk::SetBlockAt(bc_int x, bc_int y, bc_int z, BlockType block) {
       CollObj{(float)x, (float)y, (float)z,
               &(BlockManager::GetInstance().GetBlock(block))});
   Logger::qlog(Logger::Level::INFO, "Set block at block_coord(",
-               std::to_string(x), ",", std::to_string(y), ",",
                std::to_string(z), ")");
 }
 
 ChunkManager::ChunkManager() {}
 ChunkManager::~ChunkManager() {}
 
-Chunk *ChunkManager::GetChunkAt(b_int x, b_int y) {
-  std::shared_lock lock(chunksMutex);
-  return chunks[x / 16 + y / 16 * 16];
+Chunk *ChunkManager::GetChunk(c_int x, c_int y) {
+  // std::shared_lock lock(chunksMutex);
+  return chunks[x + y * 16];
 }
 
-Chunk *ChunkManager::GetChunk(c_int x, c_int y) {
-  std::shared_lock lock(chunksMutex);
-  return chunks[x + y * 16];
+Chunk *ChunkManager::GetChunkAt(b_int x, b_int y) {
+  return GetChunk(x / 16, y / 16);
 }
 
 void ChunkManager::SetBlockAt(b_int x, b_int y, b_int z, BlockType block) {
@@ -60,7 +58,7 @@ BlockType ChunkManager::GetBlockAt(b_int x, b_int y, b_int z) {
 }
 
 void ChunkManager::LoadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
-  std::unique_lock lock(chunksMutex);
+  // std::unique_lock lock(chunksMutex);
   for (c_int i = x1; i <= x2; ++i)
     for (c_int j = y1; j <= y2; ++j) {
       ci_int index = i + j * 16;
@@ -77,7 +75,7 @@ void ChunkManager::LoadChunksAt(b_int x1, b_int y1, b_int x2, b_int y2) {
 }
 
 void ChunkManager::UnloadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
-  std::unique_lock lock(chunksMutex);
+  // std::unique_lock lock(chunksMutex);
   for (c_int i = x1; i <= x2; ++i)
     for (c_int j = y1; j <= y2; ++j) {
       ci_int index = i + j * 16;
@@ -93,7 +91,7 @@ void ChunkManager::UnloadChunksAt(b_int x1, b_int y1, b_int x2, b_int y2) {
 }
 
 bool ChunkManager::IsChunkLoaded(c_int x, c_int y) {
-  std::unique_lock lock(chunksMutex);
+  // std::unique_lock lock(chunksMutex);
   return chunks[x + 16 * y] != nullptr;
 }
 

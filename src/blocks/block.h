@@ -23,7 +23,6 @@ class Block : public Object {
 protected:
   uint8_t width, height, depth; // i use int because i dont like float for size
   Texture2D spriteSheet;
-  std::string name;
   bool hasTileEntity;
   bool isSolid;
   Direction direction;
