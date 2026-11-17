@@ -1,10 +1,11 @@
+
 # Trình biên dịch
 CXX = g++
 
 # Đường dẫn Raylib trên máy của bạn
 RAYLIB_PATH = $(CURDIR)/third_party/raylib/src
 
-# ⬅️ THÊM: Đường dẫn Quill (vendored trong dự án)
+# Đường dẫn Quill (vendored trong dự án)
 QUILL_PATH  = $(CURDIR)/third_party/quill
 
 # Cấu trúc thư mục
@@ -14,23 +15,32 @@ BUILD_DIR = build
 # Tên file chạy (sẽ nằm trong thư mục build)
 TARGET = $(BUILD_DIR)/game_app
 
-# 🚀 TỰ ĐỘNG TÌM ĐỆ QUY TẤT CẢ FILE .cpp TRONG CÁC THƯ MỤC CON
+# TỰ ĐỘNG TÌM ĐỆ QUY TẤT CẢ FILE .cpp TRONG CÁC THƯ MỤC CON
 SRCS = $(shell find $(SRC_DIR) -name "*.cpp")
-# Chuyển đổi đường dẫn file .cpp thành file .o tương ứng trong build/
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
-# 🛠️ CỜ BIÊN DỊCH
-# ⬅️ THÊM: -pthread (bắt buộc cho Quill) và -isystem $(QUILL_PATH)/include
-#    -isystem thay vì -I để tắt warning từ header Quill (không cần thiết nhưng sạch log)
+# CỜ BIÊN DỊCH CƠ BẢN
 CXXFLAGS = -I. -I$(RAYLIB_PATH) \
            -isystem $(QUILL_PATH)/include \
-           -Wall -std=c++20 -MMD -MP -pthread \
-           -O2 -DNDEBUG
+           -Wall -std=c++20 -MMD -MP -pthread
+
+# --- TỰ ĐỘNG NHỚ VÀ ĐỒNG BỘ CHẾ ĐỘ LOG ---
+CURRENT_MODE := $(if $(filter off,$(LOG)),off,on)
+MODE_FILE := $(BUILD_DIR)/.mode_$(CURRENT_MODE)
+
+ifeq ($(wildcard $(MODE_FILE)),)
+    $(shell mkdir -p $(BUILD_DIR) && rm -f $(BUILD_DIR)/.mode_* && touch $(MODE_FILE))
+endif
+
+ifeq ($(CURRENT_MODE), off)
+    CXXFLAGS += -O2 -DNDEBUG
+else
+    CXXFLAGS += -g -O0
+endif
 
 # Cờ liên kết thư viện
-# ⬅️ THÊM: -pthread ở cuối (link flag) — -lpthread đã có nhưng -pthread tốt hơn
 LDFLAGS = -L$(RAYLIB_PATH) -Wl,-rpath,$(RAYLIB_PATH) \
-          -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -pthread
+           -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -pthread
 
 # --- CÁC LỆNH (TARGETS) ---
 all: $(TARGET)
@@ -39,8 +49,8 @@ $(TARGET): $(OBJS)
 	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-# Biên dịch file .cpp thành .o và tự động tạo thư mục đích tương ứng
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+# Biên dịch file .cpp thành .o (phụ thuộc thêm vào $(MODE_FILE))
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(MODE_FILE)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -55,3 +65,4 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 .PHONY: all run clean
+
