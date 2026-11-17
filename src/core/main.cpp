@@ -1,4 +1,3 @@
-#include "config.h"
 #include "game.h"
 #include "src/functionality/camera.h"
 #include "src/utils/logger.h"
@@ -6,12 +5,10 @@
 #include <raylib.h>
 
 int main(int argc, char *argv[]) {
-  RunConfig config = parseArgs(argc, argv);
+  Logger::INIT_LOGGER();
 
-  Logger::init(config.to_file, config.log_file, config.verbose_flag);
-
-  Logger::log("Logger initialized");
-  Logger::log(config.toString(), Logger::Level::DEBUG);
+  Log("Logger initialized");
+  Log("Gaming starting");
 
   InitWindow(SCREENSIZE, SCREENNAME);
   SetTargetFPS(60);
@@ -42,9 +39,7 @@ int main(int argc, char *argv[]) {
 
   CloseWindow();
 
-  Logger::log("Closed window");
-  Logger::log("Logger closing . . .");
-  Logger::close();
+  Log("Closed window");
 
   return 0;
 }

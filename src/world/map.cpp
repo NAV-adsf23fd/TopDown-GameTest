@@ -4,7 +4,6 @@
 #include "src/physics/collision.h"
 #include "src/utils/logger.h"
 #include "src/utils/utility.h"
-#include <mutex>
 #include <string>
 #include <sys/types.h>
 
@@ -24,8 +23,7 @@ void Chunk::SetBlockAt(bc_int x, bc_int y, bc_int z, BlockType block) {
   CollisionManager::GetInstance().AddObj(
       CollObj{(float)x, (float)y, (float)z,
               &(BlockManager::GetInstance().GetBlock(block))});
-  Logger::qlog(Logger::Level::INFO, "Set block at block_coord(",
-               std::to_string(z), ")");
+  Log("Set block at block_coord({})", std::to_string(z));
 }
 
 ChunkManager::ChunkManager() {}
@@ -43,7 +41,7 @@ Chunk *ChunkManager::GetChunkAt(b_int x, b_int y) {
 void ChunkManager::SetBlockAt(b_int x, b_int y, b_int z, BlockType block) {
   Chunk *chunk = GetChunkAt(x, y);
   if (chunk == nullptr) { // clang-format off
-    Logger::qlog(Logger::Level::ERROR, "Didn't load chunk at block_coord(",std::to_string(x),",",std::to_string(y),")"); // clang-format on
+    LogE("Didnt load chunk at block_coord({}, {})", std::to_string(x), std::to_string(y));
   } else
     chunk->SetBlockAt(x - chunk->x * 16, y - chunk->y * 16, z, block);
 }
@@ -64,8 +62,7 @@ void ChunkManager::LoadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
       ci_int index = i + j * 16;
       if (chunks[index] == nullptr) {
         chunks[index] = new Chunk(i, j);
-        Logger::qlog(Logger::Level::INFO, "Loaded chunk at chunk_coord(",
-                     std::to_string(i), ",", std::to_string(j), ")");
+        Log("Loaded chunk at chunk_coord({},{})", std::to_string(i),  std::to_string(j));
       }
     }
 }
