@@ -23,7 +23,7 @@ void Chunk::SetBlockAt(bc_int x, bc_int y, bc_int z, BlockType block) {
   CollisionManager::GetInstance().AddObj(
       CollObj{(float)x, (float)y, (float)z,
               &(BlockManager::GetInstance().GetBlock(block))});
-  Log("Set block at block_coord({})", std::to_string(z));
+  Log("Set block at block_coord({}, {})", std::to_string(x), std::to_string(y));
 }
 
 ChunkManager::ChunkManager() {}

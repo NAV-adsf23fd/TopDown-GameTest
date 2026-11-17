@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
   Logger::INIT_LOGGER();
 
   Log("Logger initialized");
-  Log("Gaming starting");
+  Log("Game starting");
 
   InitWindow(SCREENSIZE, SCREENNAME);
   SetTargetFPS(60);

@@ -22,4 +22,3 @@ Build and Run without log
 ```
 make run LOG=off
 ```
-```
