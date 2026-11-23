@@ -28,12 +28,12 @@ class ChunkManager {
 private:
   // use unique_ptr instead of Chunk* to automatically delete heap, so I don't
   // have to spawn delete everywhere
-  std::unique_ptr<Chunk> chunks[CHUNK_IN_WORLD] = {nullptr};
+  std::shared_ptr<Chunk> chunks[CHUNK_IN_WORLD] = {nullptr};
   std::shared_mutex chunksMutex;
 
 public:
-  Chunk *GetChunk(c_int x, c_int y);
-  Chunk *GetChunkAt(b_int x, b_int y);
+  std::shared_ptr<Chunk> GetChunk(c_int x, c_int y);
+  std::shared_ptr<Chunk> GetChunkAt(b_int x, b_int y);
 
   void SetBlockAt(b_int x, b_int y, b_int z, BlockType block);
   BlockType GetBlockAt(b_int x, b_int y, b_int z);

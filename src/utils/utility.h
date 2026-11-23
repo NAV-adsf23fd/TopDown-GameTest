@@ -2,15 +2,16 @@
 #include <cstdint>
 #include <ostream>
 #include <raylib.h>
+#include <stdexcept>
 #include <string>
 
 // clang-format off
-typedef int8_t b_int;    // type 8bits for block coord (x, y, z) in world
-typedef int32_t bi_int;  // type 24bits for index block coord (x * y * z = 256 * 256 * 256) in world
-typedef int8_t c_int;    // type 4bits for chunk coord (x, y) in world
-typedef int8_t ci_int;   // type 8bits for index chunk coord (x * y = 16 * 16) in world
-typedef int8_t bc_int;   // type 8bits for block coord (x, y, z) in chunk
-typedef int16_t bci_int; // type 16bits for index block coord (x * y * z = 16 * 16 * 256) in chunk
+typedef int8_t b_int;     // type 8bits for block coord (x, y, z) in world
+typedef uint32_t bi_int;  // type 24bits for index block coord (x * y * z = 256 * 256 * 256) in world
+typedef int8_t c_int;     // type 4bits for chunk coord (x, y) in world
+typedef uint8_t ci_int;   // type 8bits for index chunk coord (x * y = 16 * 16) in world
+typedef uint8_t bc_int;   // type 8bits for block coord (x, y, z) in chunk
+typedef uint16_t bci_int; // type 16bits for index block coord (x * y * z = 16 * 16 * 256) in chunk
 
 #define CHUNK_IN_WORLD 16 * 16
 #define BLOCK_IN_WORLD 256 * 256 * 256
@@ -112,3 +113,26 @@ float ShortestRotatePath(float currentAngle, const float targetAngle,
 
 void DrawVector(const Vector2 &startPos, const float alphaPosDegrees,
                 const float length, const Color &color);
+
+class PositionBoundException : std::runtime_error {
+public:
+  explicit PositionBoundException(const std::string &message)
+      : std::runtime_error(message) {};
+};
+
+template <typename T>
+void CheckPositionBound(const T x, const T y, const T z, const int dx,
+                        const int dy, const int dz) {
+  if ((x < 0 || x > dx - 1) || (y < 0 || y > dy - 1) || (z < 0 || z > dz - 1))
+    throw PositionBoundException("Vuot ngoai pham vi");
+}
+
+template <typename T>
+void CheckPositionBound(const T x, const T y, const int d) {
+  if ((x < -d || x > d - 1) || (y < -d || y > d - 1))
+    throw PositionBoundException("Vuot ngoai pham vi");
+}
+
+inline c_int BtCcoord(const b_int coord) {
+  return (coord >= 0) ? (coord / 16) : ((coord - 15) / 16);
+}

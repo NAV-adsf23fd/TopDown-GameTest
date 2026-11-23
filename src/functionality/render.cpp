@@ -65,11 +65,11 @@ void RenderManager::StartChunkWorker(Player &player) {
     return; // prevent duplicated init
 
   Vector3 pos = player.GetPosition();
-  c_int currentChunkX = static_cast<c_int>(pos.x) / 16;
-  c_int currentChunkY = static_cast<c_int>(pos.y) / 16;
+  c_int currentChunkX = BtCcoord(static_cast<c_int>(pos.x));
+  c_int currentChunkY = BtCcoord(static_cast<c_int>(pos.y));
   ChunkManager::GetInstance().LoadChunks(currentChunkX, currentChunkY,
                                          currentChunkX, currentChunkY);
-  loadedChunks[currentChunkX + 16 + (currentChunkY + 16) * 16] =
+  loadedChunks[currentChunkX + 8 + (currentChunkY + 8) * 16] =
       ChunkManager::GetInstance().GetChunk(currentChunkX, currentChunkY);
 
   isRunning = true;
@@ -86,11 +86,13 @@ void RenderManager::StopChunkWorker() {
 void RenderManager::ChunkWorkerLoop(Player &player) {
   while (isRunning) {
     Vector3 pos = player.GetPosition();
-    c_int currentChunkX = static_cast<c_int>(pos.x) / 16;
-    c_int currentChunkY = static_cast<c_int>(pos.y) / 16;
+    c_int currentChunkX = BtCcoord(static_cast<c_int>(pos.x));
+    c_int currentChunkY = BtCcoord(static_cast<c_int>(pos.y));
+
+    // TODO: optimize this
 
     {
-      std::shared_lock<std::shared_mutex> lock(loadedChunksMutex);
+      std::unique_lock<std::shared_mutex> lock(loadedChunksMutex);
       for (auto it = loadedChunks.begin(); it != loadedChunks.end();) {
         c_int dx = std::abs(it->second->x - currentChunkX);
         c_int dy = std::abs(it->second->y - currentChunkY);
@@ -111,9 +113,12 @@ void RenderManager::ChunkWorkerLoop(Player &player) {
       std::unique_lock<std::shared_mutex> lock(loadedChunksMutex);
       for (c_int x = currentChunkX - 1; x <= currentChunkX + 1; ++x) {
         for (c_int y = currentChunkY - 1; y <= currentChunkY + 1; ++y) {
+          if (x < -8 || x > 7 || y < -8 || y > 7)
+            continue;
+
           if (!ChunkManager::GetInstance().IsChunkLoaded(x, y)) {
             ChunkManager::GetInstance().LoadChunks(x, y, x, y);
-            loadedChunks[x + 16 + 16 * (y + 16)] =
+            loadedChunks[x + 8 + 16 * (y + 8)] =
                 ChunkManager::GetInstance().GetChunk(x, y);
           }
         }

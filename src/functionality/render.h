@@ -7,6 +7,7 @@
 #include "src/utils/utility.h"
 #include "src/world/map.h"
 #include <atomic>
+#include <memory>
 #include <thread>
 #include <unordered_map>
 #include <variant>
@@ -25,7 +26,7 @@ class RenderManager {
 private:
   std::vector<RenderItem> renderList;
   // std::vector<Chunk *> loadedChunks;
-  std::unordered_map<ci_int, Chunk *> loadedChunks;
+  std::unordered_map<ci_int, std::shared_ptr<Chunk>> loadedChunks;
   std::shared_mutex loadedChunksMutex;
   std::thread chunkWorker;
   std::atomic<bool> isRunning{false};
