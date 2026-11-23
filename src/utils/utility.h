@@ -103,6 +103,7 @@ uint8_t GetAnimationRow(const Direction direction);
 }
 
 Vector2 ScreenCoordinateOf(const Vector3 &position);
+Rectangle ScreenRectangeOf(const Rectangle &rect);
 void Normalize2D(Vector3 &vec);
 float GetAngleFromDirection(const Direction direction);
 Direction GetDirectionFromAngle(const float angle);

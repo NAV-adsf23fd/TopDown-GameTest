@@ -33,8 +33,8 @@ void PlayerCamera::CameraFunctionality(Vector2 playerPos) {
         (Vector2){GetScreenHeight() / 2.0f, GetScreenWidth() / 2.0f};
   }
   camera.zoom = expf(logf(camera.zoom) + ((float)GetMouseWheelMove() * 0.1f));
-  camera.zoom = fmax(camera.zoom, 1.0f);
-  camera.zoom = fmin(camera.zoom, 3.0f);
+  camera.zoom = fmax(camera.zoom, 0.1f);
+  camera.zoom = fmin(camera.zoom, 30.0f);
 }
 
 void PlayerCamera::CameraUpdate(Vector2 playerPos) {

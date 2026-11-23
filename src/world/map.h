@@ -2,14 +2,15 @@
 #include "src/blocks/block.h"
 #include "src/core/manager.h"
 #include "src/utils/utility.h"
+#include <memory>
 #include <ostream>
 #include <raylib.h>
 #include <shared_mutex>
-#include <sstream>
 #include <string>
 
 class Chunk {
 private:
+  std::shared_mutex blockMutex;
   BlockType position[BLOCK_IN_CHUNK];
 
 public:
@@ -25,7 +26,9 @@ class ChunkManager {
   MAKE_SINGLETON(ChunkManager);
 
 private:
-  Chunk *chunks[CHUNK_IN_WORLD] = {nullptr};
+  // use unique_ptr instead of Chunk* to automatically delete heap, so I don't
+  // have to spawn delete everywhere
+  std::unique_ptr<Chunk> chunks[CHUNK_IN_WORLD] = {nullptr};
   std::shared_mutex chunksMutex;
 
 public:

@@ -9,6 +9,10 @@ Vector2 ScreenCoordinateOf(const Vector3 &position) {
   return {16 * position.x, 16 * position.y - 8 * position.z};
 }
 
+Rectangle ScreenRectangeOf(const Rectangle &rect) {
+  return {16 * rect.x, 16 * rect.y, rect.width * 16, rect.height * 16};
+}
+
 void Normalize2D(Vector3 &vec) {
   float length2D = sqrt(vec.x * vec.x + vec.y * vec.y);
   if (length2D != 0.0f) {

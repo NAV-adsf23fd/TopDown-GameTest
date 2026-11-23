@@ -36,8 +36,16 @@ void Game::Draw() {
   RenderManager::GetInstance().Render();
   DrawVector(ScreenCoordinateOf(player->GetPosition()), player->GetAngle(), 10,
              RED);
+  // DrawRectangleLines(-127 * 16, -127 * 16, 256 * 16, 256 * 16, RED);
+  for (int i = -128; i <= 127; i += 16)
+    for (int j = -128; j <= 127; j += 16) {
+      DrawRectangleLines(i * 16, j * 16, 16 * 16, 16 * 16, GRAY);
+    }
+
   DrawVector({-100, 0}, 0.0f, 200, BLACK);
   DrawVector({0, -100}, 90.0f, 200, BLACK);
+
+  RenderManager::GetInstance().Draw();
 }
 
 void Game::DrawDebug() const { player->DrawDebug(); }

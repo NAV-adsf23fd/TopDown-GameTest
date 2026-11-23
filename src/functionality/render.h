@@ -4,9 +4,9 @@
 #include "src/core/manager.h"
 #include "src/entities/entity.h"
 #include "src/entities/player.h"
+#include "src/utils/utility.h"
 #include "src/world/map.h"
 #include <atomic>
-#include <cstdint>
 #include <thread>
 #include <unordered_map>
 #include <variant>
@@ -25,7 +25,8 @@ class RenderManager {
 private:
   std::vector<RenderItem> renderList;
   // std::vector<Chunk *> loadedChunks;
-  std::unordered_map<uint16_t, Chunk *> loadedChunks;
+  std::unordered_map<ci_int, Chunk *> loadedChunks;
+  std::shared_mutex loadedChunksMutex;
   std::thread chunkWorker;
   std::atomic<bool> isRunning{false};
 
@@ -36,4 +37,5 @@ public:
   void ChunkWorkerLoop(Player &player);
   void StartChunkWorker(Player &player);
   void StopChunkWorker();
+  void Draw();
 };

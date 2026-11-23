@@ -1,9 +1,11 @@
 #include "render.h"
 #include "raylib.h"
 #include "src/entities/player.h"
+#include "src/utils/utility.h"
 #include "src/world/map.h"
 #include <algorithm>
-#include <cstdint>
+#include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <thread>
 #include <variant>
@@ -63,11 +65,11 @@ void RenderManager::StartChunkWorker(Player &player) {
     return; // prevent duplicated init
 
   Vector3 pos = player.GetPosition();
-  uint8_t currentChunkX = static_cast<uint8_t>(pos.x) / 16;
-  uint8_t currentChunkY = static_cast<uint8_t>(pos.y) / 16;
+  c_int currentChunkX = static_cast<c_int>(pos.x) / 16;
+  c_int currentChunkY = static_cast<c_int>(pos.y) / 16;
   ChunkManager::GetInstance().LoadChunks(currentChunkX, currentChunkY,
                                          currentChunkX, currentChunkY);
-  loadedChunks[currentChunkX + currentChunkY * 16] =
+  loadedChunks[currentChunkX + 16 + (currentChunkY + 16) * 16] =
       ChunkManager::GetInstance().GetChunk(currentChunkX, currentChunkY);
 
   isRunning = true;
@@ -83,35 +85,51 @@ void RenderManager::StopChunkWorker() {
 
 void RenderManager::ChunkWorkerLoop(Player &player) {
   while (isRunning) {
+    Vector3 pos = player.GetPosition();
+    c_int currentChunkX = static_cast<c_int>(pos.x) / 16;
+    c_int currentChunkY = static_cast<c_int>(pos.y) / 16;
 
-    Vector3 pos =
-        player.GetPosition(); // can de y vi co the thread race, them mutex
-    uint8_t currentChunkX = static_cast<uint8_t>(pos.x) / 16;
-    uint8_t currentChunkY = static_cast<uint8_t>(pos.y) / 16;
+    {
+      std::shared_lock<std::shared_mutex> lock(loadedChunksMutex);
+      for (auto it = loadedChunks.begin(); it != loadedChunks.end();) {
+        c_int dx = std::abs(it->second->x - currentChunkX);
+        c_int dy = std::abs(it->second->y - currentChunkY);
 
-    for (auto it = loadedChunks.begin(); it != loadedChunks.end();) {
-      uint8_t dx = std::abs(it->second->x - currentChunkX);
-      uint8_t dy = std::abs(it->second->y - currentChunkY);
+        if (dx > 1 || dy > 1) {
+          c_int cx = it->second->x;
+          c_int cy = it->second->y;
 
-      if (dx > 1 || dy > 1) {
-        uint8_t cx = it->second->x;
-        uint8_t cy = it->second->y;
-
-        it = loadedChunks.erase(it);
-        ChunkManager::GetInstance().UnloadChunks(cx, cy, cx, cy);
-      } else {
-        ++it;
-      }
-    }
-
-    for (int x = currentChunkX - 1; x <= currentChunkX + 1; ++x) {
-      for (int y = currentChunkY - 1; y <= currentChunkY + 1; ++y) {
-        if (!ChunkManager::GetInstance().IsChunkLoaded(x, y)) {
-          ChunkManager::GetInstance().LoadChunks(x, y, x, y);
-          loadedChunks[x + 16 * y] = ChunkManager::GetInstance().GetChunk(x, y);
+          it = loadedChunks.erase(it);
+          ChunkManager::GetInstance().UnloadChunks(cx, cy, cx, cy);
+        } else {
+          ++it;
         }
       }
     }
+
+    {
+      std::unique_lock<std::shared_mutex> lock(loadedChunksMutex);
+      for (c_int x = currentChunkX - 1; x <= currentChunkX + 1; ++x) {
+        for (c_int y = currentChunkY - 1; y <= currentChunkY + 1; ++y) {
+          if (!ChunkManager::GetInstance().IsChunkLoaded(x, y)) {
+            ChunkManager::GetInstance().LoadChunks(x, y, x, y);
+            loadedChunks[x + 16 + 16 * (y + 16)] =
+                ChunkManager::GetInstance().GetChunk(x, y);
+          }
+        }
+      }
+    }
+
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  }
+}
+
+void RenderManager::Draw() {
+  std::shared_lock<std::shared_mutex> lock(loadedChunksMutex);
+  for (auto it = loadedChunks.begin(); it != loadedChunks.end();) {
+    DrawRectangleLines(it->second->x * 16 * 16, it->second->y * 16 * 16,
+                       16 * 16, 16 * 16, YELLOW);
+    // Log("drawed {}, {}, {}, {}", it->second->x, it->second->y, 16, 16);
+    ++it;
   }
 }

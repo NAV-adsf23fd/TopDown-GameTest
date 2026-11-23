@@ -66,3 +66,15 @@ clean:
 
 .PHONY: all run clean
 
+
+
+# Biên dịch kèm AddressSanitizer (bắt lỗi nullptr, tràn mảng)
+asan:
+	$(MAKE) clean
+	$(MAKE) CXXFLAGS="$(CXXFLAGS) -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="$(LDFLAGS) -fsanitize=address" run
+
+# Biên dịch kèm ThreadSanitizer (bắt lỗi data race giữa các thread)
+tsan:
+	$(MAKE) clean
+	$(MAKE) CXXFLAGS="$(CXXFLAGS) -fsanitize=thread -fno-omit-frame-pointer" LDFLAGS="$(LDFLAGS) -fsanitize=thread" run
+

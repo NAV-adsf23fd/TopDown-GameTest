@@ -1,12 +1,12 @@
 #pragma once
 #include "entity.h"
 #include "src/utils/utility.h"
-#include <mutex>
 #include <raylib.h>
+#include <shared_mutex>
 
 class Player : Entity {
 private:
-  const float INITIALSPEED = 5;
+  const float INITIALSPEED = 50;
   const float JUMPSPEED = 5;
   const float STATICFRICTION = -0.5f;
   const float AIRFRICTION = -0.5f;
@@ -18,7 +18,7 @@ private:
   // direction -> angle: 0,1,2,3,4,5,6,7), speed = n means player can rotate n
   // direction 1 seconds. Use GetAngleFromDirection
 
-  std::mutex positionMutex;
+  std::shared_mutex collisionBoxMutex;
 
   void Move(Direction direction);
   // void UpdateAnimation() override;
