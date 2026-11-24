@@ -6,7 +6,7 @@
 
 class Player : Entity {
 private:
-  const float INITIALSPEED = 100;
+  const float INITIALSPEED = 10;
   const float JUMPSPEED = 5;
   const float STATICFRICTION = -0.5f;
   const float AIRFRICTION = -0.5f;

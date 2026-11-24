@@ -38,8 +38,8 @@ public:
   virtual Vector3ui8 GetSize();
 };
 
-class BlockManager {
-  MAKE_SINGLETON(BlockManager);
+class BlockManagerSingleton {
+  MAKE_SINGLETON(BlockManagerSingleton);
 
 private:
   std::unordered_map<BlockType, std::unique_ptr<Block>> registry;

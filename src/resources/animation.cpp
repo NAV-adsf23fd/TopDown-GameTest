@@ -3,13 +3,13 @@
 #include "src/utils/utility.h"
 #include <cstdint>
 
-// AnimRsManager
+// AnimRsManagerSingleton
 
-AnimRsManager::AnimRsManager() {}
+AnimRsManagerSingleton::AnimRsManagerSingleton() {}
 
-AnimRsManager::~AnimRsManager() { UnloadAllTextures(); }
+AnimRsManagerSingleton::~AnimRsManagerSingleton() { UnloadAllTextures(); }
 
-Texture2D &AnimRsManager::GetTexture(const std::string &filePath) {
+Texture2D &AnimRsManagerSingleton::GetTexture(const std::string &filePath) {
   auto it = textures.find(filePath);
 
   if (it != textures.end()) {
@@ -21,7 +21,7 @@ Texture2D &AnimRsManager::GetTexture(const std::string &filePath) {
   return textures[filePath];
 }
 
-void AnimRsManager::UnloadAllTextures() {
+void AnimRsManagerSingleton::UnloadAllTextures() {
   for (const auto &pair : textures) {
     UnloadTexture(pair.second);
   }
@@ -32,7 +32,7 @@ void AnimRsManager::UnloadAllTextures() {
 
 Animation::Animation(const std::string &filePath, float width, float height,
                      float baseTime, Direction direction) {
-  spriteSheet = AnimRsManager::GetInstance().GetTexture(filePath);
+  spriteSheet = AnimRsManager.GetTexture(filePath);
 
   firstFrame = 0;
   lastFrame = spriteSheet.width / width;

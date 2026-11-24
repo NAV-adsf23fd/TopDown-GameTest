@@ -11,8 +11,9 @@ SolidBlock::SolidBlock(const std::string &filePath, const uint8_t width,
     : Block(filePath, width, height, depth, direction, hasTileEntity, true) {}
 
 void SolidBlock::Draw(float x, float y, float z) {
-  DrawTextureRec(spriteSheet, Rectangle{0, 0, 16, 24},
-                 ScreenCoordinateOf(Vector3{x, y, z}), WHITE);
+  Vector2 coord = ScreenCoordinateOf(Vector3{x, y, z});
+  DrawTextureRec(spriteSheet, Rectangle{0, 0, 16, 24}, {coord.x, coord.y - 8},
+                 WHITE);
 }
 
 void SolidBlock::OnInteract() {}

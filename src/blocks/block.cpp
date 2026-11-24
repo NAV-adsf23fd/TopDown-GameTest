@@ -10,12 +10,12 @@ Block::Block(const std::string &filePath, const uint8_t width,
              const bool hasTileEntity, const bool isSolid)
     : width(width), height(height), depth(depth), hasTileEntity(hasTileEntity),
       isSolid(isSolid), direction(direction) {
-  spriteSheet = TexRsManager::GetInstance().GetTexture(filePath);
+  spriteSheet = TexRsManager.GetTexture(filePath);
 }
 
 Vector3ui8 Block::GetSize() { return Vector3ui8{width, height, depth}; }
 
-BlockManager::BlockManager() {
+BlockManagerSingleton::BlockManagerSingleton() {
   registry[BlockType::Error] =
       std::make_unique<SolidBlock>("assets/textures/ErrorBlock.png");
   registry[BlockType::Test] =
@@ -25,9 +25,9 @@ BlockManager::BlockManager() {
   registry[BlockType::Water] =
       std::make_unique<SolidBlock>("assets/textures/Water.png");
 }
-BlockManager::~BlockManager() {}
+BlockManagerSingleton::~BlockManagerSingleton() {}
 
-Block &BlockManager::GetBlock(BlockType type) const {
+Block &BlockManagerSingleton::GetBlock(BlockType type) const {
   auto it = registry.find(type);
   if (it != registry.end())
     return *(it->second);

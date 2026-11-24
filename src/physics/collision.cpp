@@ -7,12 +7,14 @@
 #include <cstdint>
 #include <variant>
 
-CollisionManager::CollisionManager() {};
-CollisionManager::~CollisionManager() {};
+CollisionManagerSingleton::CollisionManagerSingleton() {};
+CollisionManagerSingleton::~CollisionManagerSingleton() {};
 
-void CollisionManager::AddObj(CollObj item) { entityObjects.push_back(item); }
+void CollisionManagerSingleton::AddObj(CollObj item) {
+  entityObjects.push_back(item);
+}
 
-void CollisionManager::RemoveObj(objPointer address) {
+void CollisionManagerSingleton::RemoveObj(objPointer address) {
   auto it = std::find_if(
       entityObjects.begin(), entityObjects.end(),
       [&address](const CollObj &item) { return item.address == address; });
@@ -23,7 +25,7 @@ void CollisionManager::RemoveObj(objPointer address) {
   }
 }
 
-void CollisionManager::Handle() {
+void CollisionManagerSingleton::Handle() {
   for (auto obj : entityObjects) { // clang-format off
     std::visit([&obj, this](auto &&arg) { // clang-format on
           if constexpr (requires { arg->GetPosition(); }) {
@@ -31,15 +33,19 @@ void CollisionManager::Handle() {
             neighBlocks.clear();
             arg->ClearCollider();
 
+            // TODO: optimize this
             for (int8_t i = -1; i <= 1; ++i) {
               for (int8_t j = -1; j <= 1; ++j) {
                 for (int8_t k = -1; k <= 1; ++k) {
-                  Block &block = BlockManager::GetInstance().GetBlock(
-                      ChunkManager::GetInstance().GetBlockAt(
-                          pos.x + i, pos.y + j, pos.z + k));
-                  Vector3ui8 size = block.GetSize();
-                  arg->AddCollider(Box3{obj.x, obj.x + size.x, obj.y,
-                                        obj.y + size.y, obj.z, obj.z + size.z});
+                  BlockType blocktype =
+                      ChunkManager.GetBlockAt(pos.x + i, pos.y + j, pos.z + k);
+                  if (blocktype != BlockType::Error) {
+                    Block &block = BlockManager.GetBlock(blocktype);
+                    Vector3ui8 size = block.GetSize();
+                    arg->AddCollider(Box3{pos.x + i, pos.x + i + size.x,
+                                          pos.y + j, pos.y + j + size.y,
+                                          pos.z + k, pos.z + k + size.z});
+                  }
                 }
               }
             }
@@ -49,15 +55,15 @@ void CollisionManager::Handle() {
         obj.address);
 
     // neighborChunks.insert(
-    //     ChunkManager::GetInstance().GetChunkAt(pos.x - 1, pos.y));
+    //     ChunkManager.GetChunkAt(pos.x - 1, pos.y));
     // neighborChunks.insert(
-    //     ChunkManager::GetInstance().GetChunkAt(pos.x + 1, pos.y));
+    //     ChunkManager.GetChunkAt(pos.x + 1, pos.y));
     // neighborChunks.insert(
-    //     ChunkManager::GetInstance().GetChunkAt(pos.x, pos.y - 1));
+    //     ChunkManager.GetChunkAt(pos.x, pos.y - 1));
     // neighborChunks.insert(
-    //     ChunkManager::GetInstance().GetChunkAt(pos.x, pos.y + 1));
+    //     ChunkManager.GetChunkAt(pos.x, pos.y + 1));
 
-    // neighBlocks.push_back(ChunkManager::GetInstance().GetBlockAt(
+    // neighBlocks.push_back(ChunkManager.GetBlockAt(
     //     pos.x + i, pos.y + j, pos.z + k));
   }
 }

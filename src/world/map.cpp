@@ -27,28 +27,27 @@ void Chunk::SetBlockAt(bc_int x, bc_int y, bc_int z, BlockType block) {
   position[x + y * 16 + z * 16 * 16] = block;
   lock.unlock();
 
-  RenderManager::GetInstance().AddItem(
-      RenderItem{(float)x, (float)y, (float)z,
-                 &(BlockManager::GetInstance().GetBlock(block))});
-  CollisionManager::GetInstance().AddObj(
-      CollObj{(float)x, (float)y, (float)z,
-              &(BlockManager::GetInstance().GetBlock(block))});
+  RenderManager.AddItem(RenderItem{(float)x, (float)y, (float)z,
+                                   &(BlockManager.GetBlock(block))});
+  CollisionManager.AddObj(
+      CollObj{(float)x, (float)y, (float)z, &(BlockManager.GetBlock(block))});
   Log("Set block at block_coord({}, {})", std::to_string(x), std::to_string(y));
 }
 
-ChunkManager::ChunkManager() {}
-ChunkManager::~ChunkManager() {}
+ChunkManagerSingleton::ChunkManagerSingleton() {}
+ChunkManagerSingleton::~ChunkManagerSingleton() {}
 
-std::shared_ptr<Chunk> ChunkManager::GetChunk(c_int x, c_int y) {
+std::shared_ptr<Chunk> ChunkManagerSingleton::GetChunk(c_int x, c_int y) {
   std::shared_lock<std::shared_mutex> lock(chunksMutex);
   return chunks[(x + 8) + (y + 8) * 16];
 }
 
-std::shared_ptr<Chunk> ChunkManager::GetChunkAt(b_int x, b_int y) {
+std::shared_ptr<Chunk> ChunkManagerSingleton::GetChunkAt(b_int x, b_int y) {
   return GetChunk(BtCcoord(x), BtCcoord(y));
 }
 
-void ChunkManager::SetBlockAt(b_int x, b_int y, b_int z, BlockType block) {
+void ChunkManagerSingleton::SetBlockAt(b_int x, b_int y, b_int z,
+                                       BlockType block) {
   auto chunk = GetChunkAt(x, y);
   if (chunk == nullptr) {
     LogE("Didnt load chunk at block_coord({}, {})", std::to_string(x),
@@ -58,7 +57,7 @@ void ChunkManager::SetBlockAt(b_int x, b_int y, b_int z, BlockType block) {
   }
 }
 
-BlockType ChunkManager::GetBlockAt(b_int x, b_int y, b_int z) {
+BlockType ChunkManagerSingleton::GetBlockAt(b_int x, b_int y, b_int z) {
   // Log("Getting block at ({}, {}, {})", x, y, z);
   CheckPositionBound(x, y, 128);
   auto chunk = GetChunkAt(x, y);
@@ -70,7 +69,7 @@ BlockType ChunkManager::GetBlockAt(b_int x, b_int y, b_int z) {
   }
 }
 
-void ChunkManager::LoadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
+void ChunkManagerSingleton::LoadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
   for (c_int i = x1; i <= x2; ++i)
     for (c_int j = y1; j <= y2; ++j) {
       ci_int index = (i + 8) + (j + 8) * 16;
@@ -94,11 +93,13 @@ void ChunkManager::LoadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
     }
 }
 
-void ChunkManager::LoadChunksAt(b_int x1, b_int y1, b_int x2, b_int y2) {
+void ChunkManagerSingleton::LoadChunksAt(b_int x1, b_int y1, b_int x2,
+                                         b_int y2) {
   LoadChunks(BtCcoord(x1), BtCcoord(y1), BtCcoord(x2), BtCcoord(y2));
 }
 
-void ChunkManager::UnloadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
+void ChunkManagerSingleton::UnloadChunks(c_int x1, c_int y1, c_int x2,
+                                         c_int y2) {
   for (c_int i = x1; i <= x2; ++i)
     for (c_int j = y1; j <= y2; ++j) {
       ci_int index = (i + 8) + (j + 8) * 16;
@@ -123,15 +124,16 @@ void ChunkManager::UnloadChunks(c_int x1, c_int y1, c_int x2, c_int y2) {
     }
 }
 
-void ChunkManager::UnloadChunksAt(b_int x1, b_int y1, b_int x2, b_int y2) {
+void ChunkManagerSingleton::UnloadChunksAt(b_int x1, b_int y1, b_int x2,
+                                           b_int y2) {
   UnloadChunks(BtCcoord(x1), BtCcoord(y1), BtCcoord(x2), BtCcoord(y2));
 }
 
-bool ChunkManager::IsChunkLoaded(c_int x, c_int y) {
+bool ChunkManagerSingleton::IsChunkLoaded(c_int x, c_int y) {
   std::shared_lock<std::shared_mutex> lock(chunksMutex);
   return chunks[(x + 8) + 16 * (y + 8)].get() != nullptr;
 }
 
-bool ChunkManager::IsChunkLoadedAt(b_int x, b_int y) {
+bool ChunkManagerSingleton::IsChunkLoadedAt(b_int x, b_int y) {
   return IsChunkLoaded(BtCcoord(x), BtCcoord(y));
 }

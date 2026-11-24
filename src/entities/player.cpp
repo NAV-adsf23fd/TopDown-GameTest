@@ -20,11 +20,10 @@ Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
       Animation("assets/textures/temp.png", 16, 24, 0.3, currentDirection),
   };
 
-  RenderManager::GetInstance().AddItem(RenderItem{position.x, position.y,
-                                                  position.z,
-                                                  static_cast<Entity *>(this)},
-                                       "player");
-  CollisionManager::GetInstance().AddObj(
+  RenderManager.AddItem(RenderItem{position.x, position.y, position.z,
+                                   static_cast<Entity *>(this)},
+                        "player");
+  CollisionManager.AddObj(
       CollObj{position.x, position.y, position.z, static_cast<Entity *>(this)});
 
   name = "player";

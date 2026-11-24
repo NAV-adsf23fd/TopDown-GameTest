@@ -10,16 +10,17 @@
 #include <thread>
 #include <variant>
 
-RenderManager::RenderManager() {}
-RenderManager::~RenderManager() {}
+RenderManagerSingleton::RenderManagerSingleton() {}
+RenderManagerSingleton::~RenderManagerSingleton() {}
 
-void RenderManager::AddItem(RenderItem &&item, const std::string &name) {
-  if (ChunkManager::GetInstance().GetChunkAt(item.x, item.y) != nullptr) {
+void RenderManagerSingleton::AddItem(RenderItem &&item,
+                                     const std::string &name) {
+  if (ChunkManager.GetChunkAt(item.x, item.y) != nullptr) {
     renderList.push_back(item);
   }
 }
 
-void RenderManager::RemoveItem(AddressPointer address) {
+void RenderManagerSingleton::RemoveItem(AddressPointer address) {
   auto it = std::find_if(
       renderList.begin(), renderList.end(),
       [&address](const RenderItem &item) { return item.address == address; });
@@ -30,7 +31,7 @@ void RenderManager::RemoveItem(AddressPointer address) {
   }
 }
 
-void RenderManager::Render() {
+void RenderManagerSingleton::Render() {
   std::sort(renderList.begin(), renderList.end(),
             [](const RenderItem &a, const RenderItem &b) {
               Vector3 pa = std::visit(
@@ -60,30 +61,30 @@ void RenderManager::Render() {
   }
 }
 
-void RenderManager::StartChunkWorker(Player &player) {
+void RenderManagerSingleton::StartChunkWorker(Player &player) {
   if (isRunning)
     return; // prevent duplicated init
 
   Vector3 pos = player.GetPosition();
   c_int currentChunkX = BtCcoord(static_cast<c_int>(pos.x));
   c_int currentChunkY = BtCcoord(static_cast<c_int>(pos.y));
-  ChunkManager::GetInstance().LoadChunks(currentChunkX, currentChunkY,
-                                         currentChunkX, currentChunkY);
+  ChunkManager.LoadChunks(currentChunkX, currentChunkY, currentChunkX,
+                          currentChunkY);
   loadedChunks[currentChunkX + 8 + (currentChunkY + 8) * 16] =
-      ChunkManager::GetInstance().GetChunk(currentChunkX, currentChunkY);
+      ChunkManager.GetChunk(currentChunkX, currentChunkY);
 
   isRunning = true;
-  chunkWorker =
-      std::thread(&RenderManager::ChunkWorkerLoop, this, std::ref(player));
+  chunkWorker = std::thread(&RenderManagerSingleton::ChunkWorkerLoop, this,
+                            std::ref(player));
 }
 
-void RenderManager::StopChunkWorker() {
+void RenderManagerSingleton::StopChunkWorker() {
   isRunning = false;
   if (chunkWorker.joinable())
     chunkWorker.join();
 }
 
-void RenderManager::ChunkWorkerLoop(Player &player) {
+void RenderManagerSingleton::ChunkWorkerLoop(Player &player) {
   while (isRunning) {
     Vector3 pos = player.GetPosition();
     c_int currentChunkX = BtCcoord(static_cast<c_int>(pos.x));
@@ -102,7 +103,7 @@ void RenderManager::ChunkWorkerLoop(Player &player) {
           c_int cy = it->second->y;
 
           it = loadedChunks.erase(it);
-          ChunkManager::GetInstance().UnloadChunks(cx, cy, cx, cy);
+          ChunkManager.UnloadChunks(cx, cy, cx, cy);
         } else {
           ++it;
         }
@@ -116,20 +117,20 @@ void RenderManager::ChunkWorkerLoop(Player &player) {
           if (x < -8 || x > 7 || y < -8 || y > 7)
             continue;
 
-          if (!ChunkManager::GetInstance().IsChunkLoaded(x, y)) {
-            ChunkManager::GetInstance().LoadChunks(x, y, x, y);
-            loadedChunks[x + 8 + 16 * (y + 8)] =
-                ChunkManager::GetInstance().GetChunk(x, y);
+          if (!ChunkManager.IsChunkLoaded(x, y)) {
+            ChunkManager.LoadChunks(x, y, x, y);
+            loadedChunks[x + 8 + 16 * (y + 8)] = ChunkManager.GetChunk(x, y);
           }
         }
       }
     }
 
+    // TODO: optimize this
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
   }
 }
 
-void RenderManager::Draw() {
+void RenderManagerSingleton::Draw() {
   std::shared_lock<std::shared_mutex> lock(loadedChunksMutex);
   for (auto it = loadedChunks.begin(); it != loadedChunks.end();) {
     DrawRectangleLines(it->second->x * 16 * 16, it->second->y * 16 * 16,

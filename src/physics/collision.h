@@ -15,8 +15,8 @@ struct CollObj {
   objPointer address;
 };
 
-class CollisionManager {
-  MAKE_SINGLETON(CollisionManager);
+class CollisionManagerSingleton {
+  MAKE_SINGLETON(CollisionManagerSingleton);
 
 private:
   std::vector<CollObj> entityObjects;

@@ -29,11 +29,11 @@ void Game::Update() {
 
   PlayerCamera::CameraUpdate(ScreenCoordinateOf(player->GetPosition()));
 
-  CollisionManager::GetInstance().Handle();
+  CollisionManager.Handle();
 }
 
 void Game::Draw() {
-  RenderManager::GetInstance().Render();
+  RenderManager.Render();
   DrawVector(ScreenCoordinateOf(player->GetPosition()), player->GetAngle(), 10,
              RED);
   // DrawRectangleLines(-127 * 16, -127 * 16, 256 * 16, 256 * 16, RED);
@@ -45,25 +45,23 @@ void Game::Draw() {
   DrawVector({-100, 0}, 0.0f, 200, BLACK);
   DrawVector({0, -100}, 90.0f, 200, BLACK);
 
-  RenderManager::GetInstance().Draw();
+  RenderManager.Draw();
 }
 
 void Game::DrawDebug() const { player->DrawDebug(); }
 
 Game::Game() {
-  ChunkManager::GetInstance().LoadChunks(0, 0, 0, 0);
+  ChunkManager.LoadChunks(0, 0, 0, 0);
   player = std::make_unique<Player>(Vector3{1, 1, 0});
-  ChunkManager::GetInstance().SetBlockAt(0, 0, 0, BlockType::Error);
-  // ChunkManager::GetInstance().SetBlockAt(0, 1, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(1, 1, 0, BlockType::Error);
-  ChunkManager::GetInstance().SetBlockAt(1, 1, 1, BlockType::Test);
-  ChunkManager::GetInstance().SetBlockAt(1, 0, 0, BlockType::Error);
+  // ChunkManager.SetBlockAt(0, 0, 0, BlockType::Error);
+  // ChunkManager.SetBlockAt(0, 1, 0, BlockType::Error);
+  // ChunkManager.SetBlockAt(1, 1, 0, BlockType::Error);
+  // ChunkManager.SetBlockAt(1, 1, 1, BlockType::Test);
+  // ChunkManager.SetBlockAt(1, 0, 0, BlockType::Error);
 
   PlayerCamera::Init(ScreenCoordinateOf(player->GetPosition()));
 }
 
-void Game::StartWorker() {
-  RenderManager::GetInstance().StartChunkWorker(*player);
-}
+void Game::StartWorker() { RenderManager.StartChunkWorker(*player); }
 
-void Game::StopWorker() { RenderManager::GetInstance().StopChunkWorker(); }
+void Game::StopWorker() { RenderManager.StopChunkWorker(); }

@@ -20,8 +20,8 @@ struct RenderItem {
   AddressPointer address;
 };
 
-class RenderManager {
-  MAKE_SINGLETON(RenderManager);
+class RenderManagerSingleton {
+  MAKE_SINGLETON(RenderManagerSingleton);
 
 private:
   std::vector<RenderItem> renderList;

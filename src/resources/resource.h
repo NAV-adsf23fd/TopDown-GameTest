@@ -4,8 +4,8 @@
 #include <string>
 #include <unordered_map>
 
-class TexRsManager {
-  MAKE_SINGLETON(TexRsManager);
+class TexRsManagerSingleton {
+  MAKE_SINGLETON(TexRsManagerSingleton);
 
 private:
   std::unordered_map<std::string, Texture2D> textures;

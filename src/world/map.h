@@ -22,8 +22,8 @@ public:
   BlockType GetBlockAt(bc_int x, bc_int y, bc_int z);
 };
 
-class ChunkManager {
-  MAKE_SINGLETON(ChunkManager);
+class ChunkManagerSingleton {
+  MAKE_SINGLETON(ChunkManagerSingleton);
 
 private:
   // use unique_ptr instead of Chunk* to automatically delete heap, so I don't

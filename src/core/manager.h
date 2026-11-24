@@ -12,3 +12,10 @@ public:                                                                        \
     static ClassName instance;                                                 \
     return instance;                                                           \
   }
+
+#define TexRsManager TexRsManagerSingleton::GetInstance()
+#define AnimRsManager AnimRsManagerSingleton::GetInstance()
+#define BlockManager BlockManagerSingleton::GetInstance()
+#define ChunkManager ChunkManagerSingleton::GetInstance()
+#define RenderManager RenderManagerSingleton::GetInstance()
+#define CollisionManager CollisionManagerSingleton::GetInstance()

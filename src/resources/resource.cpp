@@ -1,11 +1,11 @@
 #include "resource.h"
 #include "raylib.h"
 
-TexRsManager::TexRsManager() {}
+TexRsManagerSingleton::TexRsManagerSingleton() {}
 
-TexRsManager::~TexRsManager() { UnloadAllTextures(); }
+TexRsManagerSingleton::~TexRsManagerSingleton() { UnloadAllTextures(); }
 
-Texture2D &TexRsManager::GetTexture(const std::string &filePath) {
+Texture2D &TexRsManagerSingleton::GetTexture(const std::string &filePath) {
   auto it = textures.find(filePath);
 
   if (it != textures.end()) {
@@ -17,7 +17,7 @@ Texture2D &TexRsManager::GetTexture(const std::string &filePath) {
   return textures[filePath];
 }
 
-void TexRsManager::UnloadAllTextures() {
+void TexRsManagerSingleton::UnloadAllTextures() {
   for (const auto &pair : textures) {
     UnloadTexture(pair.second);
   }

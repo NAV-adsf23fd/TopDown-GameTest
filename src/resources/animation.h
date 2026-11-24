@@ -6,8 +6,8 @@
 #include <string>
 #include <unordered_map>
 
-class AnimRsManager {
-  MAKE_SINGLETON(AnimRsManager);
+class AnimRsManagerSingleton {
+  MAKE_SINGLETON(AnimRsManagerSingleton);
 
 private:
   std::unordered_map<std::string, Texture2D> textures;
