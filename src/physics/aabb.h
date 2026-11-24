@@ -1,4 +1,5 @@
 #pragma once
+#include "lib/type/vector3.h"
 #include "src/utils/utility.h"
 #include <raylib.h>
 #include <vector>
@@ -28,6 +29,8 @@ public:
 
   void SetPosition(Vector3 &position);
   Vector3 GetPosition() const;
+
+  Vector3i8 GetSize() const;
 
   void SetColidersList(const Box3 &target);
   void ClearColidersList();

@@ -2,8 +2,10 @@
 #include "lib/type/vector3.h"
 #include "raylib.h"
 #include "src/blocks/block.h"
+#include "src/utils/logger.h"
 #include "src/world/map.h"
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <variant>
 
@@ -34,17 +36,27 @@ void CollisionManagerSingleton::Handle() {
             arg->ClearCollider();
 
             // TODO: optimize this
-            for (int8_t i = -1; i <= 1; ++i) {
-              for (int8_t j = -1; j <= 1; ++j) {
-                for (int8_t k = -1; k <= 1; ++k) {
-                  BlockType blocktype =
-                      ChunkManager.GetBlockAt(pos.x + i, pos.y + j, pos.z + k);
-                  if (blocktype != BlockType::Error) {
+
+            Vector3i8 intpos = {std::floor(pos.x), std::floor(pos.y),
+                                std::floor(pos.z)};
+            for (int8_t i = -1; i <= 2; ++i) {
+              for (int8_t j = -1; j <= 2; ++j) {
+                for (int8_t k = -1; k <= 2; ++k) {
+                  BlockType blocktype = ChunkManager.GetBlockAt(
+                      intpos.x + i, intpos.y + j, intpos.z + k);
+                  // Log("Blocktype is {}", blocktype);
+                  if (blocktype != BlockType::None) {
                     Block &block = BlockManager.GetBlock(blocktype);
                     Vector3ui8 size = block.GetSize();
-                    arg->AddCollider(Box3{pos.x + i, pos.x + i + size.x,
-                                          pos.y + j, pos.y + j + size.y,
-                                          pos.z + k, pos.z + k + size.z});
+                    // Log("This block's size is ({}, {}, {})", size.x, size.y,
+                    //     size.z);
+                    arg->AddCollider(Box3{intpos.x + i, intpos.x + i + size.x,
+                                          intpos.y + j, intpos.y + j + size.y,
+                                          intpos.z + k, intpos.z + k + size.z});
+                    Log("Added collider ({}+{}, {}+{}+{}, {}+{}, {}+{}+{}, "
+                        "{}+{}, {}+{}+{}",
+                        intpos.x, i, intpos.x, i, size.x, intpos.y, j, intpos.y,
+                        j, size.y, intpos.z, k, intpos.z, k, size.z);
                   }
                 }
               }

@@ -1,12 +1,13 @@
 #pragma once
 #include "entity.h"
+#include "lib/type/vector3.h"
 #include "src/utils/utility.h"
 #include <raylib.h>
 #include <shared_mutex>
 
 class Player : Entity {
 private:
-  const float INITIALSPEED = 10;
+  const float INITIALSPEED = 5;
   const float JUMPSPEED = 5;
   const float STATICFRICTION = -0.5f;
   const float AIRFRICTION = -0.5f;
@@ -31,6 +32,7 @@ public:
 
   void SetDirection(Direction direction) override;
   Vector3 GetPosition() override;
+  Vector3i8 GetSize() override;
   float GetAngle();
   void AddCollider(const Box3 &target) override;
 

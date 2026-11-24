@@ -1,5 +1,6 @@
 #include "player.h"
 #include "entity.h"
+#include "lib/type/vector3.h"
 #include "raylib.h"
 #include "src/functionality/render.h"
 #include "src/physics/collision.h"
@@ -7,8 +8,9 @@
 #include "src/utils/utility.h"
 #include <mutex>
 #include <raymath.h>
+#include <shared_mutex>
 
-Player::Player(Vector3 position) : Entity(position, Vector3{16, 16, 24}) {
+Player::Player(Vector3 position) : Entity(position, Vector3{1, 1, 1}) {
   currentState = EntityState::IDLE;
   currentDirection = Direction::D;
   maxHp = 100;
@@ -93,6 +95,10 @@ void Player::SetDirection(Direction direction) { currentDirection = direction; }
 Vector3 Player::GetPosition() {
   std::shared_lock<std::shared_mutex> lock(collisionBoxMutex);
   return collisionBox.GetPosition();
+}
+Vector3i8 Player::GetSize() {
+  std::shared_lock<std::shared_mutex> lock(collisionBoxMutex);
+  return collisionBox.GetSize();
 }
 float Player::GetAngle() { return currentAngle; }
 

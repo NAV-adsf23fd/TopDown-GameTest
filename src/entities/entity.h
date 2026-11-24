@@ -1,4 +1,5 @@
 #pragma once
+#include "lib/type/vector3.h"
 #include "src/physics/aabb.h"
 #include "src/physics/object.h"
 #include "src/resources/animation.h"
@@ -41,6 +42,7 @@ public:
   virtual void Update() = 0;
   virtual void SetDirection(Direction direction) = 0;
   virtual Vector3 GetPosition() = 0;
+  virtual Vector3i8 GetSize() = 0;
   virtual void AddCollider(const Box3 &target) = 0;
   void ClearCollider();
 };

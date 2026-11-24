@@ -1,4 +1,5 @@
 #include "aabb.h"
+#include "lib/type/vector3.h"
 #include "raymath.h"
 #include "src/utils/utility.h"
 
@@ -145,6 +146,10 @@ void AABB::SetPosition(Vector3 &position) {
 }
 
 Vector3 AABB::GetPosition() const { return {box.minX, box.minY, box.minZ}; }
+
+Vector3i8 AABB::GetSize() const {
+  return {box.maxX - box.minX, box.maxY - box.minY, box.maxZ - box.minZ};
+}
 
 void AABB::UpdateMovement(Vector3 &velocity, const float INITIALSPEED) {
   collisionFlag = CollisionFlags::None;

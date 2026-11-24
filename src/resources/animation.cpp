@@ -70,7 +70,7 @@ void Animation::Update() {
 }
 
 void Animation::Draw(Vector2 position) {
-  DrawTextureRec(spriteSheet, frameRect, position, WHITE);
+  DrawTextureRec(spriteSheet, frameRect, {position.x, position.y - 8}, WHITE);
 }
 
 void Animation::SetDirection(Direction direction) {
